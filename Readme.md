@@ -1,7 +1,7 @@
 # Личный проект «Readme»
 
-* Студент: [Руслан Иванов](https://up.htmlacademy.ru/nodejs-2/5/user/2235809).
-* Наставник: `Неизвестно`.
+* Студент: [Руслан Иванов](https://t.me/rodrijiez).
+* mentor: [Глеб Клецков](https://htmlacademy.ru/profile/id1487865).
 
 ---
 

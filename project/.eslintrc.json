@@ -6,6 +6,16 @@
   "plugins": [
     "@nx"
   ],
+  "rules": {
+    "@typescript-eslint/explicit-member-accessibility": [
+      "error",
+      {
+        "overrides": {
+          "constructors": "no-public"
+        }
+      }
+    ]
+  },
   "overrides": [
     {
       "files": [

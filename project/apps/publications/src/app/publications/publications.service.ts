@@ -194,7 +194,7 @@ export class PublicationsService {
   ): Publication {
     const { ownerId } = options;
     const id = randomUUID();
-    const date = new Date();
+    const date = Date.now();
     return {
       originalOwnerId: ownerId,
       currentOwnerId: ownerId,

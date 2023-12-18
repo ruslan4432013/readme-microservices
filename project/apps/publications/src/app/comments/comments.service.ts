@@ -9,7 +9,7 @@ export class CommentsService {
 
   public async create(dto: CreateCommentDto) {
     const comment: Comment = {
-      createdAt: new Date(),
+      createdAt: Date.now(),
       publicationId: dto.publicationId,
       text: dto.text,
       userId: dto.userId,

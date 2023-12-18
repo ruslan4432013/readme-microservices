@@ -3,5 +3,5 @@ export interface Comment {
   text: string;
   userId: string;
   publicationId: string;
-  createdAt: Date;
+  createdAt: number;
 }

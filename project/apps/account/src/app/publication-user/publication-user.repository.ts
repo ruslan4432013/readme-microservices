@@ -7,7 +7,7 @@ export class PublicationUserRepository extends BaseMemoryRepository<PublicationU
   public async findByEmail(email: string): Promise<PublicationUserEntity | null> {
     for (const [, entity] of this.entities) {
       if (entity.email === email) {
-        return Promise.resolve(entity)
+        return entity
       }
     }
     return null

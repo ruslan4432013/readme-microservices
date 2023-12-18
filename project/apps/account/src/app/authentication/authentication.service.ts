@@ -1,8 +1,13 @@
-import { ConflictException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { PublicationUserRepository } from '../publication-user/publication-user.repository';
 import { CreateUserDto } from './dto/create-user.dto';
 import { PublicationUserEntity } from '../publication-user/publication-user.entity';
-import { AUTH_USER_EXISTS, AUTH_USER_NOT_FOUND, AUTH_USER_PASSWORD_WRONG } from './authentication.constant';
+import { AUTH_USER_MESSAGES } from './authentication.constant';
 import { AuthUser } from '@project/shared/app/types';
 import { LoginUserDto } from './dto/login-user.dto';
 
@@ -22,9 +27,9 @@ export class AuthenticationService {
       passwordHash: '',
     };
 
-    const existUser = await this.publicationUserRepository.findByEmail(email);
-    if (existUser) {
-      throw new ConflictException(AUTH_USER_EXISTS);
+    const existedUser = await this.publicationUserRepository.findByEmail(email);
+    if (existedUser) {
+      throw new ConflictException(AUTH_USER_MESSAGES.EXISTS);
     }
 
     const userEntity = await new PublicationUserEntity(
@@ -36,18 +41,18 @@ export class AuthenticationService {
 
   public async verifyUser(dto: LoginUserDto) {
     const { email, password } = dto;
-    const existUser = await this.publicationUserRepository.findByEmail(email)
-    if (!existUser) {
-      throw new NotFoundException(AUTH_USER_NOT_FOUND)
+    const existedUser = await this.publicationUserRepository.findByEmail(email);
+    if (!existedUser) {
+      throw new NotFoundException(AUTH_USER_MESSAGES.NOT_FOUND);
     }
-    const publicationUserEntity = new PublicationUserEntity(existUser)
-    if (!await publicationUserEntity.comparePassword(password)) {
-      throw new UnauthorizedException(AUTH_USER_PASSWORD_WRONG)
+    const publicationUserEntity = new PublicationUserEntity(existedUser);
+    if (!(await publicationUserEntity.comparePassword(password))) {
+      throw new UnauthorizedException(AUTH_USER_MESSAGES.PASSWORD_WRONG);
     }
-    return publicationUserEntity.toPOJO()
+    return publicationUserEntity.toPOJO();
   }
 
   public async getUser(id: string) {
-    return this.publicationUserRepository.findById(id)
+    return this.publicationUserRepository.findById(id);
   }
 }

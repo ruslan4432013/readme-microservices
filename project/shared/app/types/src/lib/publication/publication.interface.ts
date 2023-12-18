@@ -4,8 +4,8 @@ export interface Publication {
   id?: string
   tags?: string[]
   status: PublicationStatus
-  createdAt: Date
-  updatedAt: Date
+  createdAt: number
+  updatedAt: number
   isReposted: boolean
   currentOwnerId: string
   originalOwnerId: string

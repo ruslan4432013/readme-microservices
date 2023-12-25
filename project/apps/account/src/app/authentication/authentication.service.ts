@@ -10,12 +10,17 @@ import { PublicationUserEntity } from '../publication-user/publication-user.enti
 import { AUTH_USER_MESSAGES } from './authentication.constant';
 import { AuthUser } from '@project/shared/app/types';
 import { LoginUserDto } from './dto/login-user.dto';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthenticationService {
   constructor(
-    private readonly publicationUserRepository: PublicationUserRepository
-  ) {}
+    private readonly publicationUserRepository: PublicationUserRepository,
+    private readonly configService: ConfigService
+  ) {
+    console.log(configService.get<string>('db.host'));
+    console.log(configService.get<string>('db.user'));
+  }
 
   public async register(dto: CreateUserDto) {
     const { email, fullname, password } = dto;
@@ -53,6 +58,10 @@ export class AuthenticationService {
   }
 
   public async getUser(id: string) {
-    return this.publicationUserRepository.findById(id);
+    const existedUser = await this.publicationUserRepository.findById(id);
+    if (!existedUser) {
+      throw new NotFoundException(`User with id ${id} not found`);
+    }
+    return existedUser;
   }
 }

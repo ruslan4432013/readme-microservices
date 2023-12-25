@@ -20,25 +20,29 @@ export class PublicationUserEntity implements AuthUser, Entity<string> {
       email: this.email,
       fullname: this.fullname,
       avatar: this.avatar,
-      passwordHash: this.passwordHash
+      passwordHash: this.passwordHash,
     };
   }
 
   public populate(data: AuthUser) {
-    this.id = data.id
+    this.id = data.id;
     this.email = data.email;
     this.fullname = data.fullname;
     this.avatar = data.avatar;
-    this.passwordHash = data.passwordHash
+    this.passwordHash = data.passwordHash;
   }
 
   public async setPassword(password: string): Promise<PublicationUserEntity> {
     const salt = await genSalt(SALT_ROUND);
-    this.passwordHash = await hash(password, salt)
-    return this
+    this.passwordHash = await hash(password, salt);
+    return this;
   }
 
   public async comparePassword(password: string): Promise<boolean> {
-    return compare(password, this.passwordHash)
+    return compare(password, this.passwordHash);
+  }
+
+  static fromObject(data: AuthUser): PublicationUserEntity {
+    return new PublicationUserEntity(data);
   }
 }

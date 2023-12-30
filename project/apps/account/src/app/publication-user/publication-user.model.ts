@@ -25,6 +25,11 @@ export class PublicationUserModel extends Document implements AuthUser {
     required: true,
   })
   public passwordHash: string;
+
+  @Prop({
+    default: []
+  })
+  public subscribersIds: string[];
 }
 
 export const PublicationUserSchema = SchemaFactory.createForClass(PublicationUserModel);

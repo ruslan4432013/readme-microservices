@@ -3,4 +3,5 @@ export interface User {
   email: string;
   fullname: string;
   avatar: string;
+  subscribersIds: string[]
 }

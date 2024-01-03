@@ -19,6 +19,9 @@
       "@project/shared/config/account": ["shared/config/account/src/index.ts"],
       "@project/shared/core": ["shared/core/src/index.ts"],
       "@project/shared/helpers": ["shared/helpers/src/index.ts"],
+      "@project/shared/publications/models": [
+        "shared/publications/models/src/index.ts"
+      ]
     }
   },
   "exclude": ["node_modules", "tmp"]

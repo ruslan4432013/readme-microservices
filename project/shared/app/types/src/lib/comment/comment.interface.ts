@@ -1,7 +1,10 @@
 export interface Comment {
   id?: string;
-  text: string;
+  message: string;
   userId: string;
   publicationId: string;
-  createdAt: number;
+  createdAt: Date;
+  updatedAt: Date;
+
+  toPOJO(): Record<string, unknown>;
 }

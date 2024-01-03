@@ -7,7 +7,7 @@ import {
   Post,
   Patch,
 } from '@nestjs/common';
-import { PublicationsService } from './publications.service';
+import { PublicationService } from './publication.service';
 import { CreateVideoPublicationDto } from './dto/video-publication';
 import {
   CreateTextPublicationDto,
@@ -24,8 +24,8 @@ import {
 } from './dto/link-publication';
 
 @Controller('publications')
-export class PublicationsController {
-  constructor(private readonly publicationService: PublicationsService) {}
+export class PublicationController {
+  constructor(private readonly publicationService: PublicationService) {}
 
   @Post('link')
   public async createLinkPublication(@Body() dto: CreateLinkPublicationDto) {

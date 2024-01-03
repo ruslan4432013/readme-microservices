@@ -3,7 +3,7 @@ import {
   CreateVideoPublicationDto,
   UpdateVideoPublicationDto,
 } from './dto/video-publication';
-import { PublicationsRepository } from './publications.repository';
+import { PublicationRepository } from './publication.repository';
 import {
   LinkPublication,
   PhotoPublication,
@@ -15,7 +15,7 @@ import {
   VideoPublication,
 } from '@project/shared/app/types';
 import { randomUUID } from 'node:crypto';
-import { DefaultPublicationOptions } from './publications.type';
+import { DefaultPublicationOptions } from './publication.type';
 import {
   CreateLinkPublicationDto,
   UpdateLinkPublicationDto,
@@ -34,9 +34,9 @@ import {
 } from './dto/text-publication';
 
 @Injectable()
-export class PublicationsService {
+export class PublicationService {
   constructor(
-    private readonly publicationsRepository: PublicationsRepository
+    private readonly publicationsRepository: PublicationRepository
   ) {}
 
   public async createVideoPublication(dto: CreateVideoPublicationDto) {

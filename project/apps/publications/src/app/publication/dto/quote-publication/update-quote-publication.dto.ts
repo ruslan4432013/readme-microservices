@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { PROPERTY } from '../../publicatoins.constant';
+import { PROPERTY } from '../../publicatoin.constant';
 
 export class UpdateQuotePublicationDto {
   @ApiProperty(PROPERTY.NAME)

@@ -1,0 +1,38 @@
+# Get all tags
+GET http://localhost:3000/api/tags HTTP/1.1
+
+###
+
+# Get tag by Id
+
+GET http://localhost:3000/api/tags/4a65ef74-2843-435c-b076-8c85ef6896ff HTTP/1.1
+
+###
+
+# Create a new category
+
+POST http://localhost:3000/api/tags HTTP/1.1
+Content-Type: application/json
+
+{
+  "title": "mains"
+}
+
+###
+
+# Delete a tag by id
+
+DELETE http://localhost:3000/api/tags/4a65ef74-2843-435c-b076-8c85ef6896ff HTTP/1.1
+
+###
+
+# Update a tag by id
+
+PATCH http://localhost:3000/api/tags/8095373f-440d-44eb-bbc8-c85dc18b0591 HTTP/1.1
+Content-Type: application/json
+
+{
+  "title": "This"
+}
+
+###

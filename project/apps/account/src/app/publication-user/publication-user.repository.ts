@@ -21,6 +21,6 @@ export class PublicationUserRepository extends BaseMongoRepository<
     email: string
   ): Promise<PublicationUserEntity | null> {
     const document = await this.model.findOne({ email }).exec();
-    return this.createEntityFromDocument(document)
+    return document ? this.createEntityFromDocument(document) : null
   }
 }

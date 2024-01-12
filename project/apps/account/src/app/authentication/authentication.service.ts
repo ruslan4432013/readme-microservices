@@ -30,6 +30,7 @@ export class AuthenticationService {
       fullname,
       avatar: '',
       passwordHash: '',
+      subscribersIds: []
     };
 
     const existedUser = await this.publicationUserRepository.findByEmail(email);

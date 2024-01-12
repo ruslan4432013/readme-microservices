@@ -1,4 +1,4 @@
 export enum PublicationStatus {
-  Published = 'Опубликовано',
-  Draft = 'Черновик'
+  Published = 'Published',
+  Draft = 'Draft'
 }

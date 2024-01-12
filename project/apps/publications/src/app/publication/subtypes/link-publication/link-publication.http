@@ -1,0 +1,29 @@
+# Получение публикации по ID
+GET http://localhost:3000/api/publications/link/229df3c2-4628-430c-9dd9-e0f043cc3df8
+
+###
+# Создать публикацию - ссылку
+POST http://localhost:3000/api/publications/link HTTP/1.1
+Content-Type: application/json
+
+{
+  "url": "http://youtube.com/",
+  "description": "Tестовое видео, которое больше 45 символов",
+  "ownerId": "659b750fbf3a5865a3ba0862",
+  "tags": ["json", "condo", "mandsan"]
+}
+###
+# Удаление видео-публикации по ID
+DELETE http://localhost:3000/api/publications/link/229df3c2-4628-430c-9dd9-e0f043cc3df8
+
+###
+# Частичное обновление публикации
+PATCH http://localhost:3000/api/publications/link/229df3c2-4628-430c-9dd9-e0f043cc3df8 HTTP/1.1
+Content-Type: application/json
+
+{
+  "url": "http://youtube.com/",
+  "description": "Тестовая ссылка, которое больше 45 символов",
+  "tags": ["condo1", "condo2", "condo3"]
+}
+###

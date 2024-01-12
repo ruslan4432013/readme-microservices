@@ -1,0 +1,133 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../../../../node_modules/.prisma/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Publication {
+  id              String            @id @default(uuid())
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  isReposted      Boolean           @map("is_reposted")
+  status          PublicationStatus
+  type            PublicationType
+  currentOwnerId  String            @map("current_owner_id")
+  originalOwnerId String            @map("original_owner_id")
+  sourceId        String            @map("source_id")
+  tags            Tag[]
+  comments        Comment[]
+  like            Like[]
+
+  LinkPublication  LinkPublication?
+  VideoPublication VideoPublication?
+  TextPublication  TextPublication?
+  QuotePublication QuotePublication?
+  PhotoPublication PhotoPublication?
+
+  @@map("publications")
+}
+
+enum PublicationStatus {
+  Published
+  Draft
+}
+
+enum PublicationType {
+  Photo
+  Video
+  Text
+  Quote
+  Link
+}
+
+model LinkPublication {
+  id            String      @id @default(uuid())
+  url           String
+  description   String
+  publication   Publication @relation(fields: [publicationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  publicationId String      @unique
+
+  @@map("link_publications")
+}
+
+model VideoPublication {
+  id            String      @id @default(uuid())
+  name          String
+  link          String
+  publication   Publication @relation(fields: [publicationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  publicationId String      @unique
+
+  @@map("video_publications")
+}
+
+model PhotoPublication {
+  id            String      @id @default(uuid())
+  photo         String
+  publication   Publication @relation(fields: [publicationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  publicationId String      @unique
+
+  @@map("photo_publications")
+}
+
+model TextPublication {
+  id            String      @id @default(uuid())
+  name          String
+  announcement  String
+  text          String
+  publication   Publication @relation(fields: [publicationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  publicationId String      @unique
+
+  @@map("text_publications")
+}
+
+model QuotePublication {
+  id            String      @id @default(uuid())
+  author        String
+  text          String
+  publication   Publication @relation(fields: [publicationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  publicationId String      @unique
+
+  @@map("quote_publications")
+}
+
+model Tag {
+  id           String        @id @default(uuid())
+  title        String        @unique
+  publications Publication[]
+  createdAt    DateTime      @default(now()) @map("created_at")
+  updatedAt    DateTime      @updatedAt @map("updated_at")
+
+  @@index([title])
+  @@map("tags")
+}
+
+model Comment {
+  id            String      @id @default(uuid())
+  message       String
+  userId        String      @map("user_id")
+  createdAt     DateTime    @default(now()) @map("created_at")
+  updatedAt     DateTime    @updatedAt @map("updated_at")
+  publication   Publication @relation(fields: [publicationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  publicationId String      @map("publication_id")
+
+  @@index([publicationId])
+  @@map("comments")
+}
+
+model Like {
+  id            String      @id @default(uuid())
+  publication   Publication @relation(fields: [publicationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  publicationId String      @map("publication_id")
+  userId        String      @map("user_id")
+  createdAt     DateTime    @default(now()) @map("created_at")
+  updatedAt     DateTime    @updatedAt @map("updated_at")
+
+  @@map("likes")
+}

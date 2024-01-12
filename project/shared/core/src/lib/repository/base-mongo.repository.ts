@@ -1,10 +1,10 @@
 import { Document, Model } from 'mongoose';
-import { Entity, EntityId } from './entity.interface';
+import { Entity, EntityIdType } from './entity.interface';
 import { Repository } from './repository.interface';
 import { NotFoundException } from '@nestjs/common';
 
 export abstract class BaseMongoRepository<
-  EntityType extends Entity<EntityId>,
+  EntityType extends Entity<EntityIdType>,
   DocumentType extends Document
 > implements Repository<EntityType>
 {
@@ -22,7 +22,7 @@ export abstract class BaseMongoRepository<
 
   public async findById(id: EntityType['id']): Promise<EntityType | null> {
     const document = await this.model.findById(id).exec();
-    return this.createEntityFromDocument(document);
+    return document ? this.createEntityFromDocument(document) : null;
   }
 
   public async save(entity: EntityType): Promise<EntityType> {

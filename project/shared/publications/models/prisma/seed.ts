@@ -1,5 +1,5 @@
 import { fakerRU as faker } from '@faker-js/faker';
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, PublicationStatus } from '@prisma/client';
 
 type Tag = {
   id: string;
@@ -19,22 +19,15 @@ type Connect<T> = {
 type Publication = {
   id: string;
   isReposted: boolean;
-  status: string;
+  status: PublicationStatus;
   currentOwnerId: string;
   originalOwnerId: string;
   sourceId: string;
   tags: Connect<Pick<Tag, 'id'>>;
-  meta: string;
   comments: Comment[];
 };
 
-function generateFakeMeta() {
-  return {
-    biba: 'boba'
-  };
-}
-
-const STATUSES = ['Опубликовано', 'Черновик'];
+const STATUSES: PublicationStatus[] = ['Draft', 'Published'];
 
 function generateFakePublication(tags: Tag[]): Publication {
   const userId = faker.string.uuid();
@@ -49,7 +42,6 @@ function generateFakePublication(tags: Tag[]): Publication {
     tags: {
       connect: tags.map(({ id }) => ({ id })),
     },
-    meta: JSON.stringify(generateFakeMeta()),
     comments: generateFakeComments(),
   };
 }
@@ -97,8 +89,9 @@ async function seedDb(prismaClient: PrismaClient) {
   }
   const publicationCount = faker.number.int({ min: 0, max: 10 });
   for (let i = 0; i < publicationCount; i++) {
+    const videoPublicationId = faker.string.uuid()
     const publication = generateFakePublication(mockTags);
-    await prismaClient.publication.create({
+    const prismaPublication = await prismaClient.publication.create({
       data: {
         id: publication.id,
         isReposted: publication.isReposted,
@@ -106,15 +99,30 @@ async function seedDb(prismaClient: PrismaClient) {
         currentOwnerId: publication.currentOwnerId,
         originalOwnerId: publication.originalOwnerId,
         sourceId: publication.sourceId,
+        type: 'Video',
         tags: publication.tags,
-        meta: publication.meta,
-        comments: publication.comments
-          ? {
-              create: publication.comments,
-            }
-          : undefined,
+        comments: {
+          create: publication.comments
+        },
+        like: {
+          create: publication.comments.map((el) => ({
+            userId: el.userId
+          }))
+        }
       },
     });
+    await prismaClient.videoPublication.create({
+      data: {
+        publication: {
+          connect: {
+            id: prismaPublication.id
+          }
+        },
+        id: videoPublicationId,
+        name: faker.word.verb(),
+        link: faker.internet.url(),
+      }
+    })
   }
 
   console.info('🤘️ Database was filled');

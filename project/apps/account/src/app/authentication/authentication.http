@@ -8,15 +8,9 @@ Content-Type: application/json
   "password": "123456"
 }
 
-###
 
-# Get user by ID
-GET http://localhost:3000/api/auth/658a0d56dd3da4d9a131e669 HTTP/1.1
-
-###
-
-# Login user by email and password
-POST http://localhost:3000/api/auth/login HTTP/1.1
+### Authorization by token, part 1. Retrieve and save token.
+POST http://localhost:3000/api/auth/login
 Content-Type: application/json
 
 {
@@ -24,4 +18,10 @@ Content-Type: application/json
   "password": "123456"
 }
 
-###
+> {%
+  client.global.set("auth_token", response.body.accessToken);
+%}
+
+### Authorization by token, part 2. Use token to authorize.
+GET http://localhost:3000/api/auth/65a2bcf9b017372d5b6672d9 HTTP/1.1
+Authorization: Bearer {{auth_token}}

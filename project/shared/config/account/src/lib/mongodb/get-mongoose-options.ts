@@ -13,12 +13,12 @@ export function getMongooseOptions(): MongooseModuleAsyncOptions {
           databaseName: config.get<string>('db.name'),})
       return {
         uri: getMongoConnectionString({
-          username: config.get<string>('db.user'),
-          password: config.get<string>('db.password'),
-          host: config.get<string>('db.host'),
-          port: config.get<string>('db.port'),
-          authDatabase: config.get<string>('db.authBase'),
-          databaseName: config.get<string>('db.name'),
+          username: config.get<string>('db.user')!,
+          password: config.get<string>('db.password')!,
+          host: config.get<string>('db.host')!,
+          port: config.get<string>('db.port')!,
+          authDatabase: config.get<string>('db.authBase')!,
+          databaseName: config.get<string>('db.name')!,
         }),
       };
     },

@@ -1,66 +1,10 @@
-# Create a video publication
-POST http://localhost:3000/api/publications/video HTTP/1.1
+# Получение списка публикаций
+GET http://localhost:3000/api/publications HTTP/1.1
 Content-Type: application/json
 
-{
-  "name": "Супер видео",
-  "link": "http://hello-world.link",
-  "ownerId": "3243241213"
-}
-
 ###
-
-# Create a link publication
-POST http://localhost:3000/api/publications/link HTTP/1.1
-Content-Type: application/json
-
-{
-  "description": "По этой ссылке что-то крутое",
-  "link": "http://hello-world.link",
-  "ownerId": "3243241213"
-}
-
-###
-
-# Create a photo publication
-POST http://localhost:3000/api/publications/photo HTTP/1.1
-Content-Type: application/json
-
-{
-  "photo": "http://hello-world.link/photo.jpg",
-  "ownerId": "3243241213"
-}
-
-###
-
-# Create a quote publication
-POST http://localhost:3000/api/publications/quote HTTP/1.1
-Content-Type: application/json
-
-{
-  "name": "Супер цитата",
-  "author": "Джейсон Стэтхем",
-  "text": "Водка, пиво, коньячок - я иду на турничок",
-  "ownerId": "3243241213"
-}
-
-###
-
-# Create a text publication
-POST http://localhost:3000/api/publications/text HTTP/1.1
-Content-Type: application/json
-
-{
-  "name": "Супер видео",
-  "announcement": "Событие века",
-  "text": "Земля круглая",
-  "ownerId": "3243241213"
-}
-
-###
-
-# Create a text publication
-GET http://localhost:3000/api/publications/5841d40e-7e36-46ee-9049-0d7d2b10bbd4 HTTP/1.1
+# Получение публикации
+GET http://localhost:3000/api/publications/5f603541-653b-4912-a239-36f785a8fbe2 HTTP/1.1
 Content-Type: application/json
 
 ###

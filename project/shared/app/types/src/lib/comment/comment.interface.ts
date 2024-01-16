@@ -6,5 +6,4 @@ export interface Comment {
   createdAt: Date;
   updatedAt: Date;
 
-  toPOJO(): Record<string, unknown>;
 }

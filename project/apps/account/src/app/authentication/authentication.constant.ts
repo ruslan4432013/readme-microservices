@@ -5,6 +5,7 @@ export const AUTH_USER_MESSAGES = {
   EXISTS: 'User with this email exists',
   NOT_FOUND: 'User not found',
   PASSWORD_WRONG: 'User password is wrong',
+  EMAIL_NOT_VALID: 'The email is not valid'
 }
 
 
@@ -20,6 +21,8 @@ export const PROPERTY = {
   PASSWORD: {
     description: 'User password',
     example: '123456',
+    minimum: 6,
+    maximum: 12,
   },
   FULLNAME: {
     description:

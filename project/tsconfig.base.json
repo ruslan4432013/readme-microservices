@@ -4,6 +4,9 @@
     "rootDir": ".",
     "sourceMap": true,
     "declaration": false,
+    "strict": true,
+    "strictNullChecks": true,
+    "strictPropertyInitialization": false,
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
@@ -17,6 +20,9 @@
     "paths": {
       "@project/shared/app/types": ["shared/app/types/src/index.ts"],
       "@project/shared/config/account": ["shared/config/account/src/index.ts"],
+      "@project/shared/config/file-vault": [
+        "shared/config/file-vault/src/index.ts"
+      ],
       "@project/shared/core": ["shared/core/src/index.ts"],
       "@project/shared/helpers": ["shared/helpers/src/index.ts"],
       "@project/shared/publications/models": [

@@ -13,4 +13,7 @@ export class LoggedUserRdo {
 
   @Expose()
   public accessToken: string;
+
+  @Expose()
+  public refreshToken: string;
 }

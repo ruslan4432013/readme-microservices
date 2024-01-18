@@ -38,3 +38,9 @@ export function getMongoConnectionString(options: Options): string {
     options;
   return `mongodb://${username}:${password}@${host}:${port}/${databaseName}?authSource=${authDatabase}`;
 }
+
+type RabbitMQOptions = Omit<Options, 'authDatabase' | 'databaseName'>
+
+export function getRabbitMQConnectionString({username, password, host, port}: RabbitMQOptions): string {
+  return `amqp://${username}:${password}@${host}:${port}`;
+}

@@ -1,11 +1,6 @@
 import { Entity, EntityIdType } from "@project/shared/core";
 import { BasePublication, PublicationStatus, PublicationType } from "@project/shared/app/types";
 import { PublicationTagEntity } from "../publication-tag/publication-tag.entity";
-import { LinkPublicationEntity } from "./subtypes/link-publication/link-publication.entity";
-import { PhotoPublicationEntity } from "./subtypes/photo-publication/photo-publication.entity";
-import { TextPublicationEntity } from "./subtypes/text-publication/text-publication.entity";
-import { QuotePublicationEntity } from "./subtypes/quote-publication/quote-publication.entity";
-import { VideoPublicationEntity } from "./subtypes/video-publication/video-publication.entity";
 
 
 
@@ -29,8 +24,8 @@ export class PublicationEntity<Publication extends BasePublication = BasePublica
   }
 
   protected populate(data: Publication) {
-    this.id = data.id ?? undefined
-    this.tags = data.tags?.map(tag => PublicationTagEntity.fromObject(tag)) ?? undefined
+    this.id = data.id
+    this.tags = data.tags?.map(tag => PublicationTagEntity.fromObject(tag))
     this.type = data.type
     this.createdAt = data.createdAt
     this.currentOwnerId = data.currentOwnerId

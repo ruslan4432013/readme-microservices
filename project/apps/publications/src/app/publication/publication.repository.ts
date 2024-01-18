@@ -4,7 +4,6 @@ import {
   PaginationResult,
   PublicationStatus,
   PublicationType,
-  SortVariants
 } from "@project/shared/app/types";
 import { BadRequestException, Injectable } from "@nestjs/common";
 import { PrismaClientService } from "@project/shared/publications/models";

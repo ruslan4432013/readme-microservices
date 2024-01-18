@@ -11,7 +11,7 @@ export class PublicationCommentEntity implements Comment, Entity<string, Comment
   public userId: string;
 
   public populate(data: Comment): PublicationCommentEntity {
-    this.id = data.id ?? undefined;
+    this.id = data.id;
     this.createdAt = data.createdAt;
     this.message = data.message;
     this.publicationId = data.publicationId;

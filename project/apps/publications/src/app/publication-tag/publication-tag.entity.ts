@@ -16,10 +16,10 @@ export class PublicationTagEntity implements Tag, Entity<string, Tag> {
   }
 
   public populate(data: Tag): void {
-    this.id = data.id ?? undefined;
+    this.id = data.id;
     this.title = data.title;
-    this.updatedAt = data.updatedAt ?? undefined;
-    this.createdAt = data.createdAt ?? undefined;
+    this.updatedAt = data.updatedAt;
+    this.createdAt = data.createdAt;
   }
 
   public toPOJO(): Tag {

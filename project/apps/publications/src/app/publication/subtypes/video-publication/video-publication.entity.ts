@@ -21,7 +21,6 @@ export class VideoPublicationEntity extends PublicationEntity<VideoPublication> 
   }
 
   static fromObject(data: VideoPublication): VideoPublicationEntity {
-    console.log(data)
     return new VideoPublicationEntity(data)
   }
 }

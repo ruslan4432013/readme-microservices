@@ -1,9 +1,9 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { PublicationTagRepository } from "./publication-tag.repository";
 import { PublicationTagEntity } from "./publication-tag.entity";
-import { CreateTagDto } from "./dto/create-tag.dto";
-import { UpdateTagDto } from "./dto/update-tag.dto";
-import { CreateTagsDto } from "./dto/create-tags.dto";
+import { CreateTagDTO } from "./dto/create-tag.dto";
+import { UpdateTagDTO } from "./dto/update-tag.dto";
+import { CreateTagsDTO } from "./dto/create-tags.dto";
 
 @Injectable()
 export class PublicationTagService {
@@ -20,7 +20,7 @@ export class PublicationTagService {
     return this.publicationTagRepository.find()
   }
 
-  public async createTag(dto: CreateTagDto): Promise<PublicationTagEntity> {
+  public async createTag(dto: CreateTagDTO): Promise<PublicationTagEntity> {
     const tagTitle = dto.title.toLowerCase()
     const document = (await this.publicationTagRepository.find({ title: tagTitle })).at(0)
     if (document) {
@@ -31,7 +31,7 @@ export class PublicationTagService {
     return newTag
   }
 
-  public async createTags(dto: CreateTagsDto): Promise<PublicationTagEntity[]> {
+  public async createTags(dto: CreateTagsDTO): Promise<PublicationTagEntity[]> {
     const tagTitles = [...new Set(dto.titles.map((title) => title.toLowerCase()))]
     const documents = await Promise.all(tagTitles.map(async (title) => await this.createTag({ title })))
     return documents
@@ -45,7 +45,7 @@ export class PublicationTagService {
     }
   }
 
-  public async updateTag(id: string, dto: UpdateTagDto): Promise<PublicationTagEntity> {
+  public async updateTag(id: string, dto: UpdateTagDTO): Promise<PublicationTagEntity> {
     const tagTitle = dto.title.toLowerCase()
     const publicationTagEntity = new PublicationTagEntity({ ...dto, title: tagTitle.toLowerCase() });
 

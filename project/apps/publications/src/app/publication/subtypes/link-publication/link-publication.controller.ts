@@ -1,8 +1,8 @@
 import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post } from "@nestjs/common";
-import { fillDto } from "@project/shared/helpers";
+import { fillDTO } from "@project/shared/helpers";
 import { LinkPublicationService } from "./link-publication.service";
 import { LinkPublicationRdo } from "./rdo";
-import { CreateLinkPublicationDto, UpdateLinkPublicationDto } from "./dto";
+import { CreateLinkPublicationDTO, UpdateLinkPublicationDTO } from "./dto";
 
 @Controller('link')
 export class LinkPublicationController {
@@ -15,13 +15,13 @@ export class LinkPublicationController {
   @Get('/:id')
   public async show(@Param('id') id: string) {
     const publication = await this.linkPublicationService.findById(id)
-    return fillDto(LinkPublicationRdo, publication)
+    return fillDTO(LinkPublicationRdo, publication)
   }
 
   @Post('')
-  public async create(@Body() dto: CreateLinkPublicationDto) {
+  public async create(@Body() dto: CreateLinkPublicationDTO) {
     const publication = await this.linkPublicationService.create(dto)
-    return fillDto(LinkPublicationRdo, publication)
+    return fillDTO(LinkPublicationRdo, publication)
   }
 
   @Delete('/:id')
@@ -31,9 +31,9 @@ export class LinkPublicationController {
   }
 
   @Patch('/:id')
-  public async update(@Param('id') id: string, @Body() dto: UpdateLinkPublicationDto) {
+  public async update(@Param('id') id: string, @Body() dto: UpdateLinkPublicationDTO) {
     const publication = await this.linkPublicationService.update(id, dto)
-    return fillDto(LinkPublicationRdo, publication)
+    return fillDTO(LinkPublicationRdo, publication)
 
   }
 }

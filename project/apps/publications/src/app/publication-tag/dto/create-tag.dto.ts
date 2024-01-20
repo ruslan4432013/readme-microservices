@@ -3,7 +3,7 @@ import { PROPERTY } from '../publication-tag.constant';
 import { IsString, Validate } from "class-validator";
 import { TagTitleValidator } from "@project/shared/core";
 
-export class CreateTagDto {
+export class CreateTagDTO {
   @ApiProperty(PROPERTY.TITLE)
   @IsString()
   @Validate(TagTitleValidator, {

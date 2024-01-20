@@ -1,6 +1,6 @@
 import { Controller, Get, Param } from "@nestjs/common";
 import { PublicationService } from "./publication.service";
-import { fillPublicationDto } from "./publication.helper";
+import { fillPublicationDTO } from "./publication.helper";
 
 
 @Controller()
@@ -15,7 +15,7 @@ export class PublicationController {
   public async index() {
     const publications = await this.publicationService.getAllPublications()
     const entities = publications.entities
-      .map((publication) => fillPublicationDto(publication))
+      .map((publication) => fillPublicationDTO(publication))
     return {
       ...publications,
       entities
@@ -25,6 +25,6 @@ export class PublicationController {
   @Get('/:id')
   public async show(@Param('id') id: string) {
     const publication = await this.publicationService.getPublication(id);
-    return fillPublicationDto(publication)
+    return fillPublicationDTO(publication)
   }
 }

@@ -3,7 +3,7 @@ import { ALLOWED_HOSTS, MESSAGES, PROPERTY } from '../../../publication.constant
 import { IsMongoId, IsOptional, IsString, IsUrl, Length, Validate } from "class-validator";
 import { TagTitleValidator } from "@project/shared/core";
 
-export class UpdateVideoPublicationDto {
+export class UpdateVideoPublicationDTO {
   @ApiProperty(PROPERTY.NAME)
   @IsOptional()
   @IsString()

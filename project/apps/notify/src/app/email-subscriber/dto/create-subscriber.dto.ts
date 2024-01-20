@@ -1,7 +1,7 @@
 import { IsEmail, IsNotEmpty } from 'class-validator';
 import { EMAIL_SUBSCRIBER_MESSAGES } from '../email-subscriber.constant';
 
-export class CreateSubscriberDto {
+export class CreateSubscriberDTO {
   @IsEmail({}, { message: EMAIL_SUBSCRIBER_MESSAGES.EMAIL_NOT_VALID })
   public email: string;
 

@@ -1,8 +1,8 @@
 import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post } from "@nestjs/common";
-import { fillDto } from "@project/shared/helpers";
+import { fillDTO } from "@project/shared/helpers";
 import { PhotoPublicationService } from "./photo-publication.service";
 import { PhotoPublicationRdo } from "./rdo";
-import { CreatePhotoPublicationDto, UpdatePhotoPublicationDto } from "./dto";
+import { CreatePhotoPublicationDTO, UpdatePhotoPublicationDTO } from "./dto";
 
 @Controller('photo')
 export class PhotoPublicationController {
@@ -15,13 +15,13 @@ export class PhotoPublicationController {
   @Get('/:id')
   public async show(@Param('id') id: string) {
     const publication = await this.photoPublicationService.findById(id)
-    return fillDto(PhotoPublicationRdo, publication)
+    return fillDTO(PhotoPublicationRdo, publication)
   }
 
   @Post('')
-  public async create(@Body() dto: CreatePhotoPublicationDto) {
+  public async create(@Body() dto: CreatePhotoPublicationDTO) {
     const publication = await this.photoPublicationService.create(dto)
-    return fillDto(PhotoPublicationRdo, publication)
+    return fillDTO(PhotoPublicationRdo, publication)
   }
 
   @Delete('/:id')
@@ -31,9 +31,9 @@ export class PhotoPublicationController {
   }
 
   @Patch('/:id')
-  public async update(@Param('id') id: string, @Body() dto: UpdatePhotoPublicationDto) {
+  public async update(@Param('id') id: string, @Body() dto: UpdatePhotoPublicationDTO) {
     const publication = await this.photoPublicationService.update(id, dto)
-    return fillDto(PhotoPublicationRdo, publication)
+    return fillDTO(PhotoPublicationRdo, publication)
 
   }
 }

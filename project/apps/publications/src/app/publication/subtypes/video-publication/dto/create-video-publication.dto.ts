@@ -12,7 +12,7 @@ import {
 } from "class-validator";
 import { PUBLICATION, PublicationTagsValidator, TagTitleValidator } from "@project/shared/core";
 
-export class CreateVideoPublicationDto {
+export class CreateVideoPublicationDTO {
   @ApiProperty(PROPERTY.NAME)
   @IsString()
   @Length(PROPERTY.NAME.minimum, PROPERTY.NAME.maximum)

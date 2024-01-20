@@ -7,7 +7,7 @@ import { PublicationTagEntity } from "../publication-tag/publication-tag.entity"
 export class PublicationEntity<Publication extends BasePublication = BasePublication> implements BasePublication, Entity<EntityIdType, Publication> {
 
   public id?: string;
-  public tags?: PublicationTagEntity[];
+  public tags: PublicationTagEntity[];
   public status: PublicationStatus;
   public createdAt?: Date;
   public updatedAt?: Date;
@@ -25,7 +25,7 @@ export class PublicationEntity<Publication extends BasePublication = BasePublica
 
   protected populate(data: Publication) {
     this.id = data.id
-    this.tags = data.tags?.map(tag => PublicationTagEntity.fromObject(tag))
+    this.tags = (data.tags || []).map(tag => PublicationTagEntity.fromObject(tag))
     this.type = data.type
     this.createdAt = data.createdAt
     this.currentOwnerId = data.currentOwnerId

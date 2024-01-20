@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { LinkPublicationRepository } from "./link-publication.repository";
-import { CreateLinkPublicationDto, UpdateLinkPublicationDto } from "./dto";
+import { CreateLinkPublicationDTO, UpdateLinkPublicationDTO } from "./dto";
 import { LinkPublicationEntity } from "./link-publication.entity";
 import { PublicationTagService } from "../../../publication-tag/publication-tag.service";
 import { randomUUID } from 'node:crypto';
@@ -19,7 +19,7 @@ export class LinkPublicationService {
     return document
   }
 
-  public async create(dto: CreateLinkPublicationDto) {
+  public async create(dto: CreateLinkPublicationDTO) {
     const tags = await this.publicationTagService.createTags({
       titles: dto.tags || []
     })
@@ -42,7 +42,7 @@ export class LinkPublicationService {
 
   }
 
-  public async update(id: string, dto: UpdateLinkPublicationDto): Promise<LinkPublicationEntity> {
+  public async update(id: string, dto: UpdateLinkPublicationDTO): Promise<LinkPublicationEntity> {
     const pojoType = (await this.linkPublicationRepository.findById(id)).toPOJO()
     const titles = dto.tags || pojoType.tags?.map(el => el.title) || []
     const newTags = await this.publicationTagService.createTags({

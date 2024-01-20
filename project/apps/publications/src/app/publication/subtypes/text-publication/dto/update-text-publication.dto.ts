@@ -3,7 +3,7 @@ import { PROPERTY } from '../../../publication.constant';
 import { ArrayNotEmpty, IsArray, IsMongoId, IsOptional, IsString, Length, Validate } from "class-validator";
 import { PUBLICATION, PublicationTagsValidator, TagTitleValidator } from "@project/shared/core";
 
-export class UpdateTextPublicationDto {
+export class UpdateTextPublicationDTO {
   @ApiProperty(PROPERTY.NAME)
   @IsOptional()
   @IsString()

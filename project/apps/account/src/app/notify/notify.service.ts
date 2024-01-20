@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { AmqpConnection } from '@golevelup/nestjs-rabbitmq';
 
 import { ConfigType } from '@nestjs/config';
-import { CreateSubscriberDto } from './dto/create-subscriber.dto';
+import { CreateSubscriberDTO } from './dto/create-subscriber.dto';
 import { RabbitRouting } from '@project/shared/app/types';
 import { rabbitConfig } from '@project/shared/config/account';
 
@@ -14,8 +14,8 @@ export class NotifyService {
     private readonly rabbiOptions: ConfigType<typeof rabbitConfig>,
   ) {}
 
-  public async registerSubscriber(dto: CreateSubscriberDto) {
-    return this.rabbitClient.publish<CreateSubscriberDto>(
+  public async registerSubscriber(dto: CreateSubscriberDTO) {
+    return this.rabbitClient.publish<CreateSubscriberDTO>(
       this.rabbiOptions.exchange,
       RabbitRouting.AddSubscriber,
       { ...dto },

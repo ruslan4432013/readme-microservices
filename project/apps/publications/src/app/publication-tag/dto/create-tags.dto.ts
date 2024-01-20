@@ -1,7 +1,7 @@
 import { ArrayNotEmpty, IsArray, Validate } from "class-validator";
 import { TagTitleValidator } from "@project/shared/core";
 
-export class CreateTagsDto {
+export class CreateTagsDTO {
   @IsArray()
   @ArrayNotEmpty()
   @Validate(TagTitleValidator, {

@@ -1,4 +1,4 @@
-export class CreateSubscriberDto {
+export class CreateSubscriberDTO {
   public email: string;
   public fullname: string;
 }

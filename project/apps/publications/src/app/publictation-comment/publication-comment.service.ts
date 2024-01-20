@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 
-import { CreateCommentDto } from './dto/create-comment.dto';
+import { CreateCommentDTO } from './dto/create-comment.dto';
 import { PublicationCommentRepository } from "./publication-comment.repository";
 import { PublicationService } from "../publication/publication.service";
 import { PublicationCommentEntity } from "./publication-comment.entity";
@@ -17,12 +17,12 @@ export class PublicationCommentService {
     return this.publicationCommentRepository.findByPublicationId(publicationId);
   }
 
-  public async createComment(publicationId: string, dto: CreateCommentDto): Promise<PublicationCommentEntity> {
+  public async createComment(publicationId: string, dto: CreateCommentDTO): Promise<PublicationCommentEntity> {
    const existsPost = await this.publicationService.getPublication(publicationId);
    if (!existsPost.id) {
      throw new BadRequestException(`Unknown Publication id ${existsPost.id}`)
    }
-    const newComment = PublicationCommentEntity.fromDto(dto, existsPost.id);
+    const newComment = PublicationCommentEntity.fromDTO(dto, existsPost.id);
     return this.publicationCommentRepository.save(newComment);
   }
 }

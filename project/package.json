@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "lint": "nx run-many --all --target=lint"
+    "lint": "nx run-many --all --target=lint",
+    "lint:types": "tsc --skipLibCheck --noEmit --project tsconfig.base.json"
   },
   "private": true,
   "dependencies": {

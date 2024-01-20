@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { QuotePublicationRepository } from "./quote-publication.repository";
-import { CreateQuotePublicationDto, UpdateQuotePublicationDto } from "./dto";
+import { CreateQuotePublicationDTO, UpdateQuotePublicationDTO } from "./dto";
 import { QuotePublicationEntity } from "./quote-publication.entity";
 import { PublicationTagService } from "../../../publication-tag/publication-tag.service";
 import { randomUUID } from 'node:crypto';
@@ -19,7 +19,7 @@ export class QuotePublicationService {
     return document
   }
 
-  public async create(dto: CreateQuotePublicationDto) {
+  public async create(dto: CreateQuotePublicationDTO) {
     const tags = await this.publicationTagService.createTags({
       titles: dto.tags || []
     })
@@ -42,7 +42,7 @@ export class QuotePublicationService {
 
   }
 
-  public async update(id: string, dto: UpdateQuotePublicationDto): Promise<QuotePublicationEntity> {
+  public async update(id: string, dto: UpdateQuotePublicationDTO): Promise<QuotePublicationEntity> {
     const pojoType = (await this.quotePublicationRepository.findById(id)).toPOJO()
     const titles = dto.tags || pojoType.tags?.map(el => el.title) || []
     const newTags = await this.publicationTagService.createTags({

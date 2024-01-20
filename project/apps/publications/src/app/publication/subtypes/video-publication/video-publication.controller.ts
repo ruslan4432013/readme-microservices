@@ -1,8 +1,8 @@
 import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post } from "@nestjs/common";
-import { fillDto } from "@project/shared/helpers";
+import { fillDTO } from "@project/shared/helpers";
 import { VideoPublicationService } from "./video-publication.service";
 import { VideoPublicationRdo } from "./rdo";
-import { CreateVideoPublicationDto, UpdateVideoPublicationDto } from "./dto";
+import { CreateVideoPublicationDTO, UpdateVideoPublicationDTO } from "./dto";
 
 @Controller('video')
 export class VideoPublicationController {
@@ -15,13 +15,13 @@ export class VideoPublicationController {
   @Get('/:id')
   public async show(@Param('id') id: string) {
     const publication = await this.videoPublicationService.findById(id)
-    return fillDto(VideoPublicationRdo, publication)
+    return fillDTO(VideoPublicationRdo, publication)
   }
 
   @Post('')
-  public async create(@Body() dto: CreateVideoPublicationDto) {
+  public async create(@Body() dto: CreateVideoPublicationDTO) {
     const publication = await this.videoPublicationService.create(dto)
-    return fillDto(VideoPublicationRdo, publication)
+    return fillDTO(VideoPublicationRdo, publication)
   }
 
   @Delete('/:id')
@@ -31,8 +31,8 @@ export class VideoPublicationController {
   }
 
   @Patch('/:id')
-  public async update(@Param('id') id: string, @Body() dto: UpdateVideoPublicationDto) {
+  public async update(@Param('id') id: string, @Body() dto: UpdateVideoPublicationDTO) {
     const document = await this.videoPublicationService.update(id, dto)
-    return fillDto(VideoPublicationRdo, document)
+    return fillDTO(VideoPublicationRdo, document)
   }
 }

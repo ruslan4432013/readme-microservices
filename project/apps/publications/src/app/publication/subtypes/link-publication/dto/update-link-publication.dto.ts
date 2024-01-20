@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { PROPERTY } from '../../../publication.constant';
 import { IsOptional, IsString, IsUrl, MaxLength } from "class-validator";
 
-export class UpdateLinkPublicationDto {
+export class UpdateLinkPublicationDTO {
   @ApiProperty(PROPERTY.URL)
   @IsUrl()
   url?: string;

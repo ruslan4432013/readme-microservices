@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 
-import { CreateCommentDto } from './dto/create-comment.dto';
-import { fillDto } from '@project/shared/helpers';
+import { CreateCommentDTO } from './dto/create-comment.dto';
+import { fillDTO } from '@project/shared/helpers';
 import { CommentRdo } from './rdo/comment.rdo';
 import { PublicationCommentService } from "./publication-comment.service";
 
@@ -14,15 +14,15 @@ export class PublicationCommentController {
   @Get('/')
   public async show(@Param('publicationId') publicationId: string) {
     const comments = await this.publicationCommentService.getComments(publicationId);
-    return fillDto(CommentRdo, comments.map((comment) => comment.toPOJO()));
+    return fillDTO(CommentRdo, comments.map((comment) => comment.toPOJO()));
   }
 
   @Post('/')
   public async create(
     @Param('publicationId') publicationId: string,
-    @Body() dto: CreateCommentDto
+    @Body() dto: CreateCommentDTO
   ) {
     const newComment = await this.publicationCommentService.createComment(publicationId, dto);
-    return fillDto(CommentRdo, newComment.toPOJO());
+    return fillDTO(CommentRdo, newComment.toPOJO());
   }
 }

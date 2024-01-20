@@ -1,8 +1,8 @@
 import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post } from "@nestjs/common";
-import { fillDto } from "@project/shared/helpers";
+import { fillDTO } from "@project/shared/helpers";
 import { TextPublicationService } from "./text-publication.service";
 import { TextPublicationRdo } from "./rdo";
-import { CreateTextPublicationDto, UpdateTextPublicationDto } from "./dto";
+import { CreateTextPublicationDTO, UpdateTextPublicationDTO } from "./dto";
 
 @Controller('text')
 export class TextPublicationController {
@@ -15,13 +15,13 @@ export class TextPublicationController {
   @Get('/:id')
   public async show(@Param('id') id: string) {
     const publication = await this.textPublicationService.findById(id)
-    return fillDto(TextPublicationRdo, publication)
+    return fillDTO(TextPublicationRdo, publication)
   }
 
   @Post('')
-  public async create(@Body() dto: CreateTextPublicationDto) {
+  public async create(@Body() dto: CreateTextPublicationDTO) {
     const publication = await this.textPublicationService.create(dto)
-    return fillDto(TextPublicationRdo, publication)
+    return fillDTO(TextPublicationRdo, publication)
   }
 
   @Delete('/:id')
@@ -31,8 +31,8 @@ export class TextPublicationController {
   }
 
   @Patch('/:id')
-  public async update(@Param('id') id: string, @Body() dto: UpdateTextPublicationDto) {
+  public async update(@Param('id') id: string, @Body() dto: UpdateTextPublicationDTO) {
     const publication = await this.textPublicationService.update(id, dto)
-    return fillDto(TextPublicationRdo, publication)
+    return fillDTO(TextPublicationRdo, publication)
   }
 }

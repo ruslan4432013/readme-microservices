@@ -10,7 +10,7 @@ import {
 } from "class-validator";
 import { PUBLICATION, PublicationTagsValidator, TagTitleValidator } from "@project/shared/core";
 
-export class CreatePhotoPublicationDto {
+export class CreatePhotoPublicationDTO {
   @ApiProperty(PROPERTY.NAME)
   @IsString()
   photo: string;

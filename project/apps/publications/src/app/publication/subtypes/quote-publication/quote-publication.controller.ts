@@ -1,8 +1,8 @@
 import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post } from "@nestjs/common";
-import { fillDto } from "@project/shared/helpers";
+import { fillDTO } from "@project/shared/helpers";
 import { QuotePublicationService } from "./quote-publication.service";
 import { QuotePublicationRdo } from "./rdo";
-import { CreateQuotePublicationDto, UpdateQuotePublicationDto } from "./dto";
+import { CreateQuotePublicationDTO, UpdateQuotePublicationDTO } from "./dto";
 
 @Controller('quote')
 export class QuotePublicationController {
@@ -15,13 +15,13 @@ export class QuotePublicationController {
   @Get('/:id')
   public async show(@Param('id') id: string) {
     const publication = await this.quotePublicationService.findById(id)
-    return fillDto(QuotePublicationRdo, publication)
+    return fillDTO(QuotePublicationRdo, publication)
   }
 
   @Post('')
-  public async create(@Body() dto: CreateQuotePublicationDto) {
+  public async create(@Body() dto: CreateQuotePublicationDTO) {
     const publication = await this.quotePublicationService.create(dto)
-    return fillDto(QuotePublicationRdo, publication)
+    return fillDTO(QuotePublicationRdo, publication)
   }
 
   @Delete('/:id')
@@ -31,8 +31,8 @@ export class QuotePublicationController {
   }
 
   @Patch('/:id')
-  public async update(@Param('id') id: string, @Body() dto: UpdateQuotePublicationDto) {
+  public async update(@Param('id') id: string, @Body() dto: UpdateQuotePublicationDTO) {
     const publication = await this.quotePublicationService.update(id, dto)
-    return fillDto(QuotePublicationRdo, publication)
+    return fillDTO(QuotePublicationRdo, publication)
   }
 }

@@ -5,11 +5,11 @@ import {
   UnauthorizedException
 } from '@nestjs/common';
 import { PublicationUserRepository } from '../publication-user/publication-user.repository';
-import { CreateUserDto } from './dto/create-user.dto';
+import { CreateUserDTO } from './dto/create-user.dto';
 import { PublicationUserEntity } from '../publication-user/publication-user.entity';
 import { AUTH_USER_MESSAGES } from './authentication.constant';
 import { AuthUser, Token, TokenPayload, User } from '@project/shared/app/types';
-import { LoginUserDto } from './dto/login-user.dto';
+import { LoginUserDTO } from './dto/login-user.dto';
 import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
@@ -23,7 +23,7 @@ export class AuthenticationService {
   ) {
   }
 
-  public async register(dto: CreateUserDto) {
+  public async register(dto: CreateUserDTO) {
     const { email, fullname, password } = dto;
 
     const publicationUser: AuthUser = {
@@ -46,7 +46,7 @@ export class AuthenticationService {
     return await this.publicationUserRepository.save(userEntity);
   }
 
-  public async verifyUser(dto: LoginUserDto) {
+  public async verifyUser(dto: LoginUserDTO) {
     const { email, password } = dto;
     const existedUser = await this.publicationUserRepository.findByEmail(email);
     if (!existedUser) {

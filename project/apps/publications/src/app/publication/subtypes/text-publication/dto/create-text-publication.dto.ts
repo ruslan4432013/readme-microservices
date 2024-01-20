@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { ALLOWED_HOSTS, MESSAGES, PROPERTY } from '../../../publication.constant';
+import { PROPERTY } from '../../../publication.constant';
 import {
   ArrayNotEmpty,
   IsArray,
@@ -10,7 +10,7 @@ import {
 } from "class-validator";
 import { PUBLICATION, PublicationTagsValidator, TagTitleValidator } from "@project/shared/core";
 
-export class CreateTextPublicationDto {
+export class CreateTextPublicationDTO {
   @ApiProperty(PROPERTY.NAME)
   @IsString()
   @Length(PROPERTY.NAME.minimum, PROPERTY.NAME.maximum)

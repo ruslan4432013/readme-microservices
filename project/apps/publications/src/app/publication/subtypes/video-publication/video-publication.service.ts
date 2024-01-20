@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { VideoPublicationRepository } from "./video-publication.repository";
-import { CreateVideoPublicationDto, UpdateVideoPublicationDto } from "./dto";
+import { CreateVideoPublicationDTO, UpdateVideoPublicationDTO } from "./dto";
 import { VideoPublicationEntity } from "./video-publication.entity";
 import { PublicationTagService } from "../../../publication-tag/publication-tag.service";
 import { randomUUID } from 'node:crypto';
@@ -19,7 +19,7 @@ export class VideoPublicationService {
     return document
   }
 
-  public async create(dto: CreateVideoPublicationDto) {
+  public async create(dto: CreateVideoPublicationDTO) {
     const tags = await this.publicationTagService.createTags({
       titles: dto.tags || []
     })
@@ -42,7 +42,7 @@ export class VideoPublicationService {
 
   }
 
-  public async update(id: string, dto: UpdateVideoPublicationDto): Promise<VideoPublicationEntity> {
+  public async update(id: string, dto: UpdateVideoPublicationDTO): Promise<VideoPublicationEntity> {
     const pojoType = (await this.videoPublicationRepository.findById(id)).toPOJO()
     const titles = dto.tags || pojoType.tags?.map(el => el.title) || []
     const newTags = await this.publicationTagService.createTags({

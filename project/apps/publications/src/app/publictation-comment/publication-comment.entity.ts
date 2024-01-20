@@ -1,6 +1,6 @@
 import { Comment } from '@project/shared/app/types';
 import { Entity } from '@project/shared/core';
-import { CreateCommentDto } from './dto/create-comment.dto';
+import { CreateCommentDTO } from './dto/create-comment.dto';
 
 export class PublicationCommentEntity implements Comment, Entity<string, Comment> {
   public id?: string;
@@ -11,7 +11,7 @@ export class PublicationCommentEntity implements Comment, Entity<string, Comment
   public userId: string;
 
   public populate(data: Comment): PublicationCommentEntity {
-    this.id = data.id ?? undefined;
+    this.id = data.id;
     this.createdAt = data.createdAt;
     this.message = data.message;
     this.publicationId = data.publicationId;
@@ -37,7 +37,7 @@ export class PublicationCommentEntity implements Comment, Entity<string, Comment
       .populate(data);
   }
 
-  static fromDto(dto: CreateCommentDto, publicationId: string): PublicationCommentEntity {
+  static fromDTO(dto: CreateCommentDTO, publicationId: string): PublicationCommentEntity {
     return new PublicationCommentEntity()
       .populate({
         ...dto,

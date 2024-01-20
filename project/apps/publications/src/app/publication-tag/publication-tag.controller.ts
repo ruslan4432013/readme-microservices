@@ -1,9 +1,9 @@
 import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post } from "@nestjs/common";
 import { PublicationTagService } from "./publication-tag.service";
-import { fillDto } from "@project/shared/helpers";
+import { fillDTO } from "@project/shared/helpers";
 import { TagRdo } from "./rdo/publication-tag.rdo";
-import { CreateTagDto } from "./dto/create-tag.dto";
-import { UpdateTagDto } from "./dto/update-tag.dto";
+import { CreateTagDTO } from "./dto/create-tag.dto";
+import { UpdateTagDTO } from "./dto/update-tag.dto";
 
 @Controller('tags')
 export class PublicationTagController {
@@ -15,20 +15,20 @@ export class PublicationTagController {
   @Get('/:id')
   public async show(@Param('id') id: string) {
     const tag = this.publicationTagService.getTag(id);
-    return fillDto(TagRdo, tag)
+    return fillDTO(TagRdo, tag)
   }
 
   @Get('/')
   public async index() {
     const publicationTagEntities = await this.publicationTagService.getAllTags();
     const tags = publicationTagEntities.map((blogCategory) => blogCategory.toPOJO());
-    return fillDto(TagRdo, tags);
+    return fillDTO(TagRdo, tags);
   }
 
   @Post('/')
-  public async create(@Body() dto: CreateTagDto) {
+  public async create(@Body() dto: CreateTagDTO) {
     const newTag = await this.publicationTagService.createTag(dto);
-    return fillDto(TagRdo, newTag.toPOJO());
+    return fillDTO(TagRdo, newTag.toPOJO());
   }
 
   @Delete('/:id')
@@ -38,8 +38,8 @@ export class PublicationTagController {
   }
 
   @Patch('/:id')
-  public async update(@Param('id') id: string, @Body() dto: UpdateTagDto) {
+  public async update(@Param('id') id: string, @Body() dto: UpdateTagDTO) {
     const updatedCategory = await this.publicationTagService.updateTag(id, dto);
-    return fillDto(TagRdo, updatedCategory.toPOJO());
+    return fillDTO(TagRdo, updatedCategory.toPOJO());
   }
 }

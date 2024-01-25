@@ -4,9 +4,9 @@ export * from './lib/comment'
 export * from './lib/tag'
 export * from './lib/sort-variants.enum';
 export * from './lib/pagination.interface';
-export * from './lib/token-payload.interface';
-export * from './lib/token.interface';
+export * from './lib/token'
 export * from './lib/file.interface';
 export * from './lib/stored-file.interface';
 export * from './lib/subscriber.interface';
 export * from './lib/rabbit-routing.enum';
+export * from './lib/request-with-token-payload';

@@ -2,15 +2,15 @@ import { Inject, Injectable } from '@nestjs/common';
 import { EMAIL_ADD_SUBSCRIBER_SUBJECT } from './mail.constant';
 import { MailerService } from '@nestjs-modules/mailer';
 import { Subscriber } from '@project/shared/app/types';
-import { NotifyConfig } from '@project/shared/config/notify';
 import { ConfigType } from '@nestjs/config';
+import { notifyConfig } from '@project/shared/config/notify';
 
 @Injectable()
 export class MailService {
   constructor(
     private readonly mailerService: MailerService,
-    @Inject(NotifyConfig.KEY)
-    private readonly serviceConfig: ConfigType<typeof NotifyConfig>,
+    @Inject(notifyConfig.KEY)
+    private readonly serviceConfig: ConfigType<typeof notifyConfig>,
   ) {}
 
   public async sendNotifyNewSubscriber({email, fullname}: Subscriber) {

@@ -3,7 +3,7 @@ import { AuthenticationModule } from './authentication/authentication.module';
 import { PublicationUserModule } from './publication-user/publication-user.module';
 import {
   ConfigAccountModule,
-  getMongooseOptions,
+  getMongooseOptions
 } from '@project/shared/config/account';
 import { MongooseModule } from '@nestjs/mongoose';
 import { NotifyModule } from './notify/notify.module';
@@ -17,6 +17,7 @@ import { NotifyModule } from './notify/notify.module';
     MongooseModule.forRootAsync(getMongooseOptions()),
   ],
   controllers: [],
-  providers: [],
+  providers: []
 })
-export class AppModule {}
+export class AppModule {
+}

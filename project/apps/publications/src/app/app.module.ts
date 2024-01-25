@@ -8,9 +8,11 @@ import { LinkPublicationModule } from "./publication/subtypes/link-publication/l
 import { PhotoPublicationModule } from "./publication/subtypes/photo-publication/photo-publication.module";
 import { TextPublicationModule } from "./publication/subtypes/text-publication/text-publication.module";
 import { QuotePublicationModule } from "./publication/subtypes/quote-publication/quote-publication.module";
+import { ConfigPublicationsModule } from '@project/shared/config/publications';
 
 @Module({
   imports: [
+    ConfigPublicationsModule,
     PublicationModule,
     PublicationCommentModule,
     PublicationTagModule,

@@ -1,5 +1,5 @@
 import {
-  ConflictException, HttpException, HttpStatus,
+  ConflictException, HttpException, HttpStatus, Inject,
   Injectable, Logger,
   NotFoundException,
   UnauthorizedException
@@ -8,9 +8,13 @@ import { PublicationUserRepository } from '../publication-user/publication-user.
 import { CreateUserDTO } from './dto/create-user.dto';
 import { PublicationUserEntity } from '../publication-user/publication-user.entity';
 import { AUTH_USER_MESSAGES } from './authentication.constant';
-import { AuthUser, Token, TokenPayload, User } from '@project/shared/app/types';
+import { AuthUser, RefreshTokenPayload, Token, TokenPayload, User } from '@project/shared/app/types';
 import { LoginUserDTO } from './dto/login-user.dto';
 import { JwtService } from '@nestjs/jwt';
+import { jwtConfig } from '@project/shared/config/account';
+import { ConfigType } from '@nestjs/config';
+import { createJWTPayload } from '@project/shared/helpers';
+import { RefreshTokenService } from '../refresh-token/refresh-token.service';
 
 @Injectable()
 export class AuthenticationService {
@@ -19,7 +23,9 @@ export class AuthenticationService {
 
   constructor(
     private readonly publicationUserRepository: PublicationUserRepository,
-    private readonly jwtService: JwtService
+    private readonly jwtService: JwtService,
+    @Inject(jwtConfig.KEY) private readonly jwtOptions: ConfigType<typeof jwtConfig>,
+    private readonly refreshTokenService: RefreshTokenService
   ) {
   }
 
@@ -68,10 +74,13 @@ export class AuthenticationService {
   }
 
   public async createUserToken(user: User): Promise<Token> {
+    const accessTokenPayload = createJWTPayload(user);
+    const refreshTokenPayload = { ...accessTokenPayload, tokenId: crypto.randomUUID() };
+    await this.refreshTokenService.createRefreshSession(refreshTokenPayload);
     try {
       const [accessToken, refreshToken] = await Promise.all([
-        this.generateAccessToken(user),
-        this.generateRefreshToken(user)
+        this.generateAccessToken(accessTokenPayload),
+        this.generateRefreshToken(refreshTokenPayload)
       ]);
       return { accessToken, refreshToken };
     } catch (error) {
@@ -82,30 +91,24 @@ export class AuthenticationService {
     }
   }
 
-  public async generateRefreshToken(user: User): Promise<string> {
-    const payload: TokenPayload = {
-      sub: user.id!,
-      email: user.email,
-      fullname: user.fullname
-    };
-    return this.jwtService.signAsync(payload, { expiresIn: '7d' });
+  public async generateRefreshToken(payload: RefreshTokenPayload): Promise<string> {
+    return this.jwtService.signAsync(payload, {
+      secret: this.jwtOptions.refreshTokenSecret,
+      expiresIn: this.jwtOptions.refreshTokenExpiresIn
+    });
   }
 
-  async generateAccessToken(user: User): Promise<string> {
-    const payload: TokenPayload = {
-      sub: user.id!,
-      email: user.email,
-      fullname: user.fullname
-    };
+  public async generateAccessToken(payload: TokenPayload): Promise<string> {
     return this.jwtService.signAsync(payload);
   }
 
+  public async getUserByEmail(email: string) {
+    const existedUser = await this.publicationUserRepository.findByEmail(email);
 
-  public verifyRefreshToken(token: string) {
-    try {
-      return this.jwtService.verify(token);
-    } catch (error) {
-      throw new UnauthorizedException('Invalid refresh token');
+    if (!existedUser) {
+      throw new NotFoundException(`User with email ${email} not found`);
     }
+
+    return existedUser;
   }
 }

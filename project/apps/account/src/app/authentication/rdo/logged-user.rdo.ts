@@ -11,9 +11,11 @@ export class LoggedUserRdo {
   @Expose()
   public email: string;
 
+  @ApiProperty(PROPERTY.ACCESS_TOKEN)
   @Expose()
   public accessToken: string;
 
+  @ApiProperty(PROPERTY.REFRESH_TOKEN)
   @Expose()
   public refreshToken: string;
 }

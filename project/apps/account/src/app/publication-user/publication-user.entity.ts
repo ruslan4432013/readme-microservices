@@ -27,7 +27,7 @@ export class PublicationUserEntity implements AuthUser, Entity<string> {
   }
 
   public populate(data: AuthUser) {
-    this.id = data.id;
+    this.id = data.id || data._id?.toString();
     this.email = data.email;
     this.fullname = data.fullname;
     this.avatar = data.avatar;

@@ -26,8 +26,8 @@ export class LinkPublicationService {
     const id = randomUUID()
     const publication = new LinkPublicationEntity({
       id,
-      originalOwnerId: dto.ownerId,
-      currentOwnerId: dto.ownerId,
+      originalOwnerId: dto.userId,
+      currentOwnerId: dto.userId,
       tags,
       url: dto.url,
       description: dto.description,

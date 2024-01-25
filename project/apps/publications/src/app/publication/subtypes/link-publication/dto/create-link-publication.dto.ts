@@ -1,12 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { PROPERTY } from '../../../publication.constant';
-import { ArrayNotEmpty, IsArray, IsMongoId, IsOptional, IsString, IsUrl, MaxLength, Validate } from "class-validator";
-import { PUBLICATION, PublicationTagsValidator, TagTitleValidator } from "@project/shared/core";
+import { ArrayNotEmpty, IsArray, IsOptional, IsString, IsUrl, MaxLength, Validate } from 'class-validator';
+import { PUBLICATION, PublicationTagsValidator, TagTitleValidator } from '@project/shared/core';
 
 export class CreateLinkPublicationDTO {
-  @ApiProperty(PROPERTY.OWNER_ID)
-  @IsMongoId()
-  ownerId: string;
+  userId: string;
 
   @ApiProperty(PROPERTY.URL)
   @IsUrl()

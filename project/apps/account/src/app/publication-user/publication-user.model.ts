@@ -33,3 +33,7 @@ export class PublicationUserModel extends Document implements AuthUser {
 }
 
 export const PublicationUserSchema = SchemaFactory.createForClass(PublicationUserModel);
+
+PublicationUserSchema.virtual('id').get(function() {
+  return this._id.toString();
+});

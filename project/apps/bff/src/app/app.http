@@ -1,0 +1,32 @@
+# Login user by email and password
+POST http://localhost:3006/api/accounts/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "email": "ruslan4432013@gmail.com",
+  "password": "123456"
+}
+
+> {%
+  client.global.set("auth_token", response.body.accessToken)
+  client.global.set("refresh_token", response.body.refreshToken)
+%}
+
+###
+
+# Get new JWT pair
+GET http://localhost:3006/api/accounts/refresh HTTP/1.1
+Authorization: Bearer {{refresh_token}}
+
+###
+
+# Создать публикацию - ссылку
+POST http://localhost:3006/api/publications/link HTTP/1.1
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "url": "http://youtube.com/",
+  "description": "Tестовое видео, которое больше 45 символов",
+  "tags": ["json", "condo", "mandsan"]
+}

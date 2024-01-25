@@ -1,15 +1,28 @@
-import { Body, Controller, Get, HttpStatus, Param, Post, UnauthorizedException, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Post,
+  Req,
+  UnauthorizedException,
+  UseGuards
+} from '@nestjs/common';
 import { AuthenticationService } from './authentication.service';
 import { CreateUserDTO } from './dto/create-user.dto';
 import { fillDTO } from '@project/shared/helpers';
 import { UserRdo } from './rdo/user.rdo';
-import { LoginUserDTO } from './dto/login-user.dto';
 import { LoggedUserRdo } from './rdo/logged-user.rdo';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { MongoIdValidationPipe } from '@project/shared/core';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
-import { RefreshTokenDTO } from './dto/refresh-token.dto';
 import { NotifyService } from '../notify/notify.service';
+import { LocalAuthGuard } from './guards/local-auth.guard';
+import { RequestWithUser } from './authentication.types';
+import { JwtRefreshGuard } from './guards/jwt-refresh.guard';
+import { RequestWithTokenPayload } from '@project/shared/app/types';
 
 @ApiTags('authentication')
 @Controller('auth')
@@ -42,11 +55,28 @@ export class AuthenticationController {
     status: HttpStatus.UNAUTHORIZED,
     description: 'Password or Login is wrong.'
   })
+  @UseGuards(LocalAuthGuard)
   @Post('login')
-  public async login(@Body() dto: LoginUserDTO) {
-    const verifiedUser = await this.authService.verifyUser(dto);
-    const userToken = await this.authService.createUserToken(verifiedUser);
-    return fillDTO(LoggedUserRdo, { ...verifiedUser.toPOJO(), ...userToken });
+  public async login(@Req() { user }: RequestWithUser) {
+    if (!user) {
+      throw new UnauthorizedException('Incorrect user');
+    }
+    const userToken = await this.authService.createUserToken(user);
+    return fillDTO(LoggedUserRdo, { ...user.toPOJO(), ...userToken });
+  }
+
+  @UseGuards(JwtRefreshGuard)
+  @Get('refresh')
+  @HttpCode(HttpStatus.OK)
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Get a new access/refresh tokens'
+  })
+  public async refreshToken(@Req() { user }: RequestWithUser) {
+    if (!user) {
+      throw new UnauthorizedException('User not found');
+    }
+    return this.authService.createUserToken(user);
   }
 
   @ApiResponse({
@@ -61,16 +91,9 @@ export class AuthenticationController {
     return fillDTO(UserRdo, existUser.toPOJO());
   }
 
-  @Post('refresh')
-  async refresh(@Body() { refreshToken }: RefreshTokenDTO) {
-    try {
-      const decoded = this.authService.verifyRefreshToken(refreshToken);
-
-      const accessToken = await this.authService.generateAccessToken(decoded.sub);
-
-      return { accessToken };
-    } catch (error) {
-      throw new UnauthorizedException('Invalid refresh token');
-    }
+  @UseGuards(JwtAuthGuard)
+  @Post('check')
+  public async checkToken(@Req() { user: payload }: RequestWithTokenPayload) {
+    return payload;
   }
 }

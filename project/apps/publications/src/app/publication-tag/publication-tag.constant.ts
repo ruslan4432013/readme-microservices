@@ -1,6 +1,6 @@
 import { ApiPropertyOptions } from '@nestjs/swagger';
 
-import { PUBLICATION_TAG } from "@project/shared/core";
+import { PUBLICATION_TAG } from '@project/shared/core';
 
 export const PROPERTY = {
   TITLE: {
@@ -11,4 +11,7 @@ export const PROPERTY = {
   }
 } satisfies Record<string, ApiPropertyOptions>;
 
+export const ERROR_MESSAGES = {
+  WRONG_TAG_TITLE: 'Wrong tag title'
+};
 export const MAX_TAG_LIMIT = 10;

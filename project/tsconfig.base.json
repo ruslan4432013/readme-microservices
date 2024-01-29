@@ -1,0 +1,43 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "rootDir": ".",
+    "sourceMap": true,
+    "declaration": false,
+    "strict": true,
+    "strictNullChecks": true,
+    "strictPropertyInitialization": false,
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "importHelpers": true,
+    "target": "es2015",
+    "module": "esnext",
+    "lib": ["es2020", "dom"],
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@project/shared/app/types": ["shared/app/types/src/index.ts"],
+      "@project/shared/config/account": ["shared/config/account/src/index.ts"],
+      "@project/shared/config/bff": ["shared/config/bff/src/index.ts"],
+      "@project/shared/config/file-vault": [
+        "shared/config/file-vault/src/index.ts"
+      ],
+      "@project/shared/config/notify": ["shared/config/notify/src/index.ts"],
+      "@project/shared/config/publications": [
+        "shared/config/publications/src/index.ts"
+      ],
+      "@project/shared/core": ["shared/core/src/index.ts"],
+      "@project/shared/helpers": ["shared/helpers/src/index.ts"],
+      "@project/shared/publications/models": [
+        "shared/publications/models/src/index.ts"
+      ],
+      "@project/shared/transfer-objects": [
+        "shared/transfer-objects/src/index.ts"
+      ]
+    }
+  },
+  "exclude": ["node_modules", "tmp"]
+}

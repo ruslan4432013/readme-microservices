@@ -1,0 +1,15 @@
+# Получение списка публикаций
+GET http://localhost:3004/api/publications HTTP/1.1
+Content-Type: application/json
+
+###
+# Получение публикации
+GET http://localhost:3004/api/publications/5f603541-653b-4912-a239-36f785a8fbe2 HTTP/1.1
+Content-Type: application/json
+
+###
+
+# Получение кол-ва публикаций пользователя
+GET http://localhost:3004/api/publications/count/65b52987d780720cd7a7c1dc HTTP/1.1
+
+###

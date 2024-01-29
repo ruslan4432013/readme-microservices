@@ -1,9 +1,10 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
-import { PublicationTagRepository } from "./publication-tag.repository";
-import { PublicationTagEntity } from "./publication-tag.entity";
+
 import { CreateTagDTO } from "./dto/create-tag.dto";
-import { UpdateTagDTO } from "./dto/update-tag.dto";
 import { CreateTagsDTO } from "./dto/create-tags.dto";
+import { UpdateTagDTO } from "./dto/update-tag.dto";
+import { PublicationTagEntity } from "./publication-tag.entity";
+import { PublicationTagRepository } from "./publication-tag.repository";
 
 @Injectable()
 export class PublicationTagService {

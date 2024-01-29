@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
 import { BaseMongoRepository } from '@project/shared/core';
+
 import { FileEntity } from './file.entity';
 import { FileModel } from './file.model';
 

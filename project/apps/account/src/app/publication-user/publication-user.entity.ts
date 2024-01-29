@@ -1,6 +1,8 @@
+import { compare, genSalt, hash } from 'bcrypt';
+
 import { AuthUser } from '@project/shared/app/types';
 import { Entity } from '@project/shared/core';
-import { compare, genSalt, hash } from 'bcrypt';
+
 import { SALT_ROUND } from './publication-user.constant';
 
 export class PublicationUserEntity implements AuthUser, Entity<string> {
@@ -9,7 +11,8 @@ export class PublicationUserEntity implements AuthUser, Entity<string> {
   public fullname: string;
   public avatar: string;
   public passwordHash: string;
-  public subscribersIds: string[]
+  public createdAt: Date;
+  public subscribersIds: string[];
 
   constructor(user: AuthUser) {
     this.populate(user);
@@ -23,6 +26,7 @@ export class PublicationUserEntity implements AuthUser, Entity<string> {
       avatar: this.avatar,
       passwordHash: this.passwordHash,
       subscribersIds: this.subscribersIds,
+      createdAt: this.createdAt
     };
   }
 
@@ -32,7 +36,8 @@ export class PublicationUserEntity implements AuthUser, Entity<string> {
     this.fullname = data.fullname;
     this.avatar = data.avatar;
     this.passwordHash = data.passwordHash;
-    this.subscribersIds = data.subscribersIds
+    this.subscribersIds = data.subscribersIds;
+    this.createdAt = data.createdAt;
   }
 
   public async setPassword(password: string): Promise<PublicationUserEntity> {

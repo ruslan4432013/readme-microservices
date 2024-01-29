@@ -1,5 +1,5 @@
-import { Document } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document } from 'mongoose';
 
 import { Subscriber } from '@project/shared/app/types';
 
@@ -19,6 +19,13 @@ export class EmailSubscriberModel extends Document implements Subscriber {
     required: true
   })
   public fullname: string;
+
+  @Prop({
+    required: true,
+    type: Date,
+    default: () => Date.now()
+  })
+  public notifiedAt: Date;
 
   public id?: string;
 }

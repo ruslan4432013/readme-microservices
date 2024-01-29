@@ -1,9 +1,11 @@
-import { BasePostgresRepository } from '@project/shared/core';
-import { PublicationTagEntity } from './publication-tag.entity';
-import { Tag } from '@project/shared/app/types';
 import { Injectable, NotFoundException } from '@nestjs/common';
+
+import { Tag } from '@project/shared/app/types';
+import { BasePostgresRepository } from '@project/shared/core';
 import { PrismaClientService } from '@project/shared/publications/models';
+
 import { MAX_TAG_LIMIT } from "./publication-tag.constant";
+import { PublicationTagEntity } from './publication-tag.entity';
 import { CategoryFilter, tagFilterToPrismaFilter } from "./publication-tag.filter";
 
 @Injectable()

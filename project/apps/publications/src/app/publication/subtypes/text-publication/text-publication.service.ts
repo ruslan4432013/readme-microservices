@@ -1,10 +1,14 @@
-import { Injectable } from '@nestjs/common';
-import { TextPublicationRepository } from "./text-publication.repository";
-import { CreateTextPublicationDTO, UpdateTextPublicationDTO } from "./dto";
-import { TextPublicationEntity } from "./text-publication.entity";
-import { PublicationTagService } from "../../../publication-tag/publication-tag.service";
+import { Injectable, UnauthorizedException } from '@nestjs/common';
+
 import { randomUUID } from 'node:crypto';
-import { PublicationStatus, PublicationType } from "@project/shared/app/types";
+
+import { PublicationStatus, PublicationType } from '@project/shared/app/types';
+import { CreateTextPublicationDTO, UpdateTextPublicationDTO } from '@project/shared/transfer-objects';
+
+import { TextPublicationEntity } from './text-publication.entity';
+import { TextPublicationRepository } from './text-publication.repository';
+
+import { PublicationTagService } from '../../../publication-tag/publication-tag.service';
 
 @Injectable()
 export class TextPublicationService {
@@ -15,19 +19,19 @@ export class TextPublicationService {
   }
 
   public async findById(id: string) {
-    const document = await this.textPublicationRepository.findById(id)
-    return document
+    const document = await this.textPublicationRepository.findById(id);
+    return document;
   }
 
   public async create(dto: CreateTextPublicationDTO) {
     const tags = await this.publicationTagService.createTags({
       titles: dto.tags || []
-    })
-    const id = randomUUID()
+    });
+    const id = randomUUID();
     const publication = new TextPublicationEntity({
       id,
-      originalOwnerId: dto.ownerId,
-      currentOwnerId: dto.ownerId,
+      originalOwnerId: dto.userId,
+      currentOwnerId: dto.userId,
       tags,
       text: dto.text,
       name: dto.name,
@@ -36,19 +40,25 @@ export class TextPublicationService {
       isReposted: false,
       type: PublicationType.Text,
       status: PublicationStatus.Draft
-    })
-    const document = await this.textPublicationRepository.save(publication)
+    });
+    const document = await this.textPublicationRepository.save(publication);
 
-    return document
+    return document;
 
   }
 
-  public async update(id: string, dto: UpdateTextPublicationDTO): Promise<TextPublicationEntity> {
-    const pojoType = (await this.textPublicationRepository.findById(id)).toPOJO()
-    const titles = dto.tags || pojoType.tags?.map(el => el.title) || []
+  public async update(id: string, updateTextPublicationDTO: UpdateTextPublicationDTO): Promise<TextPublicationEntity> {
+    const { userId, ...dto } = updateTextPublicationDTO;
+    const pojoType = (await this.textPublicationRepository.findById(id)).toPOJO();
+
+    if (userId !== pojoType.currentOwnerId) {
+      throw new UnauthorizedException('User is not publication owner');
+    }
+
+    const titles = dto.tags || pojoType.tags?.map(el => el.title) || [];
     const newTags = await this.publicationTagService.createTags({
       titles
-    })
+    });
     const updatedTextPublication = new TextPublicationEntity({
       currentOwnerId: pojoType.currentOwnerId,
       isReposted: pojoType.isReposted,
@@ -61,12 +71,12 @@ export class TextPublicationService {
       name: pojoType.name,
       announcement: pojoType.announcement,
       ...dto,
-      tags: newTags.map(el => el.toPOJO()),
-    })
-    return this.textPublicationRepository.update(id, updatedTextPublication)
+      tags: newTags.map(el => el.toPOJO())
+    });
+    return this.textPublicationRepository.update(id, updatedTextPublication);
   }
 
   public async delete(id: string) {
-    await this.textPublicationRepository.deleteById(id)
+    await this.textPublicationRepository.deleteById(id);
   }
 }

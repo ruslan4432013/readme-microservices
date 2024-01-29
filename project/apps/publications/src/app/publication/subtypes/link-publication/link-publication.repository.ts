@@ -1,10 +1,12 @@
-import { BasePostgresRepository } from "@project/shared/core";
-import { LinkPublicationEntity } from "./link-publication.entity";
-import { LinkPublication, PublicationStatus, PublicationType } from "@project/shared/app/types";
-import { Injectable, NotFoundException } from "@nestjs/common";
-import { PrismaClientService } from "@project/shared/publications/models";
+import { Injectable, NotFoundException } from '@nestjs/common';
 
-import { PUBLICATION_QUERY } from "../../publication.constant";
+import { LinkPublication, PublicationStatus, PublicationType } from '@project/shared/app/types';
+import { BasePostgresRepository } from '@project/shared/core';
+import { PrismaClientService } from '@project/shared/publications/models';
+
+import { LinkPublicationEntity } from './link-publication.entity';
+
+import { PUBLICATION_QUERY } from '../../publication.constant';
 
 
 @Injectable()
@@ -18,7 +20,7 @@ export class LinkPublicationRepository extends BasePostgresRepository<
   }
 
   public async save(entity: LinkPublicationEntity): Promise<LinkPublicationEntity> {
-    const { url, description, tags, ...publication } = entity
+    const { url, description, tags, ...publication } = entity;
     const document = await this.client.linkPublication.create({
       include: PUBLICATION_QUERY.INCLUDE,
       data: {
@@ -26,6 +28,7 @@ export class LinkPublicationRepository extends BasePostgresRepository<
         description,
         publication: {
           create: {
+            id: publication.sourceId,
             tags: {
               connect: tags?.map(({ id }) => ({ id }))
             },
@@ -36,12 +39,12 @@ export class LinkPublicationRepository extends BasePostgresRepository<
             sourceId: publication.sourceId,
             status: publication.status,
             comments: {
-              connect: [],
+              connect: []
             }
           }
         }
       }
-    })
+    });
     return this.createEntityFromDocument({
       ...document.publication,
       ...document,
@@ -50,16 +53,16 @@ export class LinkPublicationRepository extends BasePostgresRepository<
       comments: document.publication._count.comments,
       type: document.publication.type as PublicationType.Link,
       status: document.publication.status as PublicationStatus
-    })
+    });
   }
 
-  public async findById(id: LinkPublicationEntity["id"]): Promise<LinkPublicationEntity> {
+  public async findById(id: LinkPublicationEntity['id']): Promise<LinkPublicationEntity> {
     const document = await this.client.linkPublication.findFirst({
       where: {
         publicationId: id
       },
-      include: PUBLICATION_QUERY.INCLUDE,
-    })
+      include: PUBLICATION_QUERY.INCLUDE
+    });
 
     if (!document) {
       throw new NotFoundException(`Link Publication with id ${id} not found.`);
@@ -68,15 +71,16 @@ export class LinkPublicationRepository extends BasePostgresRepository<
       ...document.publication,
       ...document,
       id: document.publication.id,
+      publishedAt: document.publication.publishedAt,
       likes: document.publication._count.like,
       comments: document.publication._count.comments,
       type: document.publication.type as PublicationType.Link,
       status: document.publication.status as PublicationStatus
-    })
+    });
   }
 
-  public async update(id: LinkPublicationEntity["id"], entity: LinkPublicationEntity): Promise<LinkPublicationEntity> {
-    const pojoDocument = entity.toPOJO()
+  public async update(id: LinkPublicationEntity['id'], entity: LinkPublicationEntity): Promise<LinkPublicationEntity> {
+    const pojoDocument = entity.toPOJO();
     await this.client.publication.update({
       where: {
         id
@@ -92,7 +96,7 @@ export class LinkPublicationRepository extends BasePostgresRepository<
         tags: {
           set: pojoDocument.tags?.map(({ id }) => ({ id }))
         }
-      },
+      }
     });
 
     const document = await this.client.linkPublication.update({
@@ -101,14 +105,15 @@ export class LinkPublicationRepository extends BasePostgresRepository<
       },
       data: {
         url: pojoDocument.url,
-        description: pojoDocument.description,
+        description: pojoDocument.description
       },
       include: PUBLICATION_QUERY.INCLUDE
-    })
+    });
     return this.createEntityFromDocument({
       ...document,
       ...document.publication,
       id: document.publication.id,
+      publishedAt: document.publication.publishedAt,
       likes: document.publication._count.like,
       comments: document.publication._count.comments,
       type: document.publication.type as PublicationType.Link,
@@ -116,11 +121,11 @@ export class LinkPublicationRepository extends BasePostgresRepository<
     });
   }
 
-  public async deleteById(id: LinkPublicationEntity["id"]): Promise<void> {
+  public async deleteById(id: LinkPublicationEntity['id']): Promise<void> {
     await this.client.publication.delete({
       where: {
         id
       }
-    })
+    });
   }
 }

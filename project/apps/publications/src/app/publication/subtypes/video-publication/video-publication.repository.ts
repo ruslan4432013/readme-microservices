@@ -1,10 +1,12 @@
-import { BasePostgresRepository } from "@project/shared/core";
-import { VideoPublicationEntity } from "./video-publication.entity";
-import { PublicationStatus, PublicationType, VideoPublication } from "@project/shared/app/types";
-import { Injectable, NotFoundException } from "@nestjs/common";
-import { PrismaClientService } from "@project/shared/publications/models";
+import { Injectable, NotFoundException } from '@nestjs/common';
 
-import { PUBLICATION_QUERY } from "../../publication.constant";
+import { PublicationStatus, PublicationType, VideoPublication } from '@project/shared/app/types';
+import { BasePostgresRepository } from '@project/shared/core';
+import { PrismaClientService } from '@project/shared/publications/models';
+
+import { VideoPublicationEntity } from './video-publication.entity';
+
+import { PUBLICATION_QUERY } from '../../publication.constant';
 
 
 @Injectable()
@@ -18,7 +20,7 @@ export class VideoPublicationRepository extends BasePostgresRepository<
   }
 
   public async save(entity: VideoPublicationEntity): Promise<VideoPublicationEntity> {
-    const { link, name, tags, ...publication } = entity
+    const { link, name, tags, ...publication } = entity;
     const document = await this.client.videoPublication.create({
       include: PUBLICATION_QUERY.INCLUDE,
       data: {
@@ -26,6 +28,7 @@ export class VideoPublicationRepository extends BasePostgresRepository<
         name,
         publication: {
           create: {
+            id: publication.sourceId,
             tags: {
               connect: tags?.map(({ id }) => ({ id }))
             },
@@ -36,30 +39,31 @@ export class VideoPublicationRepository extends BasePostgresRepository<
             sourceId: publication.sourceId,
             status: publication.status,
             comments: {
-              connect: [],
+              connect: []
             }
           }
         }
       }
-    })
+    });
     return this.createEntityFromDocument({
       ...document.publication,
       ...document,
       id: document.publication.id,
+      publishedAt: document.publication.publishedAt,
       likes: document.publication._count.like,
       comments: document.publication._count.comments,
       type: document.publication.type as PublicationType.Video,
       status: document.publication.status as PublicationStatus
-    })
+    });
   }
 
-  public async findById(id: VideoPublicationEntity["id"]): Promise<VideoPublicationEntity> {
+  public async findById(id: VideoPublicationEntity['id']): Promise<VideoPublicationEntity> {
     const document = await this.client.videoPublication.findFirst({
       where: {
         publicationId: id
       },
-      include: PUBLICATION_QUERY.INCLUDE,
-    })
+      include: PUBLICATION_QUERY.INCLUDE
+    });
 
     if (!document) {
       throw new NotFoundException(`Video Publication with id ${id} not found.`);
@@ -68,16 +72,17 @@ export class VideoPublicationRepository extends BasePostgresRepository<
       ...document.publication,
       ...document,
       id: document.publication.id,
+      publishedAt: document.publication.publishedAt,
       likes: document.publication._count.like,
       comments: document.publication._count.comments,
       type: document.publication.type as PublicationType.Video,
       status: document.publication.status as PublicationStatus
-    })
-    return entity
+    });
+    return entity;
   }
 
-  public async update(id: VideoPublicationEntity["id"], entity: VideoPublicationEntity): Promise<VideoPublicationEntity> {
-    const pojoDocument = entity.toPOJO()
+  public async update(id: VideoPublicationEntity['id'], entity: VideoPublicationEntity): Promise<VideoPublicationEntity> {
+    const pojoDocument = entity.toPOJO();
     await this.client.publication.update({
       where: {
         id
@@ -93,7 +98,7 @@ export class VideoPublicationRepository extends BasePostgresRepository<
         tags: {
           set: pojoDocument.tags?.map(({ id }) => ({ id }))
         }
-      },
+      }
     });
 
     const document = await this.client.videoPublication.update({
@@ -102,26 +107,27 @@ export class VideoPublicationRepository extends BasePostgresRepository<
       },
       data: {
         link: pojoDocument.link,
-        name: pojoDocument.name,
+        name: pojoDocument.name
       },
       include: PUBLICATION_QUERY.INCLUDE
-    })
+    });
     return this.createEntityFromDocument({
       ...document,
       ...document.publication,
       id: document.publication.id,
       likes: document.publication._count.like,
+      publishedAt: document.publication.publishedAt,
       comments: document.publication._count.comments,
       type: document.publication.type as PublicationType.Video,
       status: document.publication.status as PublicationStatus
     });
   }
 
-  public async deleteById(id: VideoPublicationEntity["id"]): Promise<void> {
+  public async deleteById(id: VideoPublicationEntity['id']): Promise<void> {
     await this.client.publication.delete({
       where: {
         id
       }
-    })
+    });
   }
 }

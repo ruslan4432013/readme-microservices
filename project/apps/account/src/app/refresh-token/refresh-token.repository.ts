@@ -1,8 +1,10 @@
 import { InjectModel } from '@nestjs/mongoose';
-import { RefreshTokenModel } from './refresh-token.model';
 import { Model } from 'mongoose';
-import { RefreshTokenEntity } from './refresh-token.entity';
+
 import { BaseMongoRepository } from '@project/shared/core';
+
+import { RefreshTokenEntity } from './refresh-token.entity';
+import { RefreshTokenModel } from './refresh-token.model';
 
 export class RefreshTokenRepository extends BaseMongoRepository<
   RefreshTokenEntity,

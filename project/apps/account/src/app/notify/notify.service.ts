@@ -1,10 +1,11 @@
-import { Inject, Injectable } from '@nestjs/common';
 import { AmqpConnection } from '@golevelup/nestjs-rabbitmq';
-
+import { Inject, Injectable } from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
-import { CreateSubscriberDTO } from './dto/create-subscriber.dto';
+
 import { RabbitRouting } from '@project/shared/app/types';
 import { rabbitConfig } from '@project/shared/config/account';
+
+import { CreateSubscriberDTO } from './dto/create-subscriber.dto';
 
 @Injectable()
 export class NotifyService {

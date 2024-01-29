@@ -1,5 +1,5 @@
-import { Entity } from '@project/shared/core';
 import { BaseToken } from '@project/shared/app/types';
+import { Entity } from '@project/shared/core';
 
 export class RefreshTokenEntity implements Entity<string>, BaseToken {
   public id?: string;

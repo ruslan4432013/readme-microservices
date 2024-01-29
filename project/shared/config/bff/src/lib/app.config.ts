@@ -1,5 +1,6 @@
 import { registerAs } from '@nestjs/config';
 import * as Joi from 'joi';
+
 import * as process from 'process';
 
 const DEFAULT_PORT = 3000;
@@ -17,6 +18,8 @@ export interface ApplicationConfig {
   url: {
     account: string
     publications: string
+    files: string
+    notify: string
   }
 }
 
@@ -27,7 +30,9 @@ const validationSchema = Joi.object<ApplicationConfig, true>({
   httpClientTimeout: Joi.number(),
   url: Joi.object<ApplicationConfig['url'], true>({
     account: Joi.string().required(),
-    publications: Joi.string().required()
+    publications: Joi.string().required(),
+    files: Joi.string().required(),
+    notify: Joi.string().required()
   })
 });
 
@@ -46,7 +51,9 @@ function getConfig(): ApplicationConfig {
     httpClientTimeout: parseInt(process.env.HTTP_CLIENT_TIMEOUT || `${DEFAULT_HTTP_CLIENT_TIMEOUT}`, 10),
     url: {
       account: process.env.ACCOUNT_URL!,
-      publications: process.env.PUBLICATIONS_URL!
+      publications: process.env.PUBLICATIONS_URL!,
+      files: process.env.FILE_LOADER_URL!,
+      notify: process.env.NOTIFY_URL!
     }
   };
 

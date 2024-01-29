@@ -5,24 +5,30 @@ import {
   HttpCode,
   HttpStatus,
   Param,
-  Post,
+  Post, Query,
   Req,
   UnauthorizedException,
   UseGuards
 } from '@nestjs/common';
-import { AuthenticationService } from './authentication.service';
-import { CreateUserDTO } from './dto/create-user.dto';
-import { fillDTO } from '@project/shared/helpers';
-import { UserRdo } from './rdo/user.rdo';
-import { LoggedUserRdo } from './rdo/logged-user.rdo';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
-import { MongoIdValidationPipe } from '@project/shared/core';
-import { JwtAuthGuard } from './guards/jwt-auth.guard';
-import { NotifyService } from '../notify/notify.service';
-import { LocalAuthGuard } from './guards/local-auth.guard';
-import { RequestWithUser } from './authentication.types';
-import { JwtRefreshGuard } from './guards/jwt-refresh.guard';
+
 import { RequestWithTokenPayload } from '@project/shared/app/types';
+import { MongoIdValidationPipe } from '@project/shared/core';
+import { fillDTO } from '@project/shared/helpers';
+import { ChangeUserPasswordDTO, CreateUserDTO, UserRDO } from '@project/shared/transfer-objects';
+
+import { DESCRIPTIONS } from './authentication.constant';
+import { AuthenticationService } from './authentication.service';
+import { RequestWithUser } from './authentication.types';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { JwtRefreshGuard } from './guards/jwt-refresh.guard';
+import { LocalAuthGuard } from './guards/local-auth.guard';
+import { UsersQuery } from './query/users.query';
+import { LoggedUserRDO } from './rdo/logged-user.rdo';
+import { SuccessRDO } from './rdo/success.rdo';
+
+import { NotifyService } from '../notify/notify.service';
+
 
 @ApiTags('authentication')
 @Controller('auth')
@@ -35,7 +41,7 @@ export class AuthenticationController {
 
   @ApiResponse({
     status: HttpStatus.CREATED,
-    description: 'The new user has been successfully created.'
+    description: DESCRIPTIONS.REGISTER
   })
   @Post('register')
   public async create(@Body() dto: CreateUserDTO) {
@@ -43,17 +49,34 @@ export class AuthenticationController {
 
     await this.notifyService.registerSubscriber({ email: newUser.email, fullname: newUser.fullname });
 
-    return fillDTO(UserRdo, newUser.toPOJO());
+    return fillDTO(UserRDO, newUser.toPOJO());
   }
 
   @ApiResponse({
-    type: LoggedUserRdo,
+    type: [UserRDO],
     status: HttpStatus.OK,
-    description: 'User has been successfully logged.'
+    description: DESCRIPTIONS.USERS
+  })
+  @Get('users')
+  public async getMany(@Query() { ids }: UsersQuery) {
+    const users = await this.authService.getUsers(ids);
+    return users.map(el => {
+      if (typeof el === 'string') {
+        return el;
+      }
+      return fillDTO(UserRDO, el);
+    });
+
+  }
+
+  @ApiResponse({
+    type: LoggedUserRDO,
+    status: HttpStatus.OK,
+    description: DESCRIPTIONS.LOGGED_SUCCESS
   })
   @ApiResponse({
     status: HttpStatus.UNAUTHORIZED,
-    description: 'Password or Login is wrong.'
+    description: DESCRIPTIONS.WRONG_CREDS
   })
   @UseGuards(LocalAuthGuard)
   @Post('login')
@@ -62,7 +85,7 @@ export class AuthenticationController {
       throw new UnauthorizedException('Incorrect user');
     }
     const userToken = await this.authService.createUserToken(user);
-    return fillDTO(LoggedUserRdo, { ...user.toPOJO(), ...userToken });
+    return fillDTO(LoggedUserRDO, { ...user.toPOJO(), ...userToken });
   }
 
   @UseGuards(JwtRefreshGuard)
@@ -70,7 +93,7 @@ export class AuthenticationController {
   @HttpCode(HttpStatus.OK)
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'Get a new access/refresh tokens'
+    description: DESCRIPTIONS.REFRESHED
   })
   public async refreshToken(@Req() { user }: RequestWithUser) {
     if (!user) {
@@ -80,20 +103,61 @@ export class AuthenticationController {
   }
 
   @ApiResponse({
-    type: UserRdo,
+    type: UserRDO,
     status: HttpStatus.OK,
-    description: 'User found'
+    description: DESCRIPTIONS.FOUND_USER
   })
   @UseGuards(JwtAuthGuard)
   @Get(':id')
   public async show(@Param('id', MongoIdValidationPipe) id: string) {
     const existUser = await this.authService.getUser(id);
-    return fillDTO(UserRdo, existUser.toPOJO());
+    const pojo = existUser.toPOJO();
+    return fillDTO(UserRDO, {
+        ...pojo,
+        subscribersCount: pojo.subscribersIds.length
+      }
+    );
   }
 
+  @ApiResponse({
+    type: UserRDO,
+    status: HttpStatus.OK,
+    description: DESCRIPTIONS.CHECk
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: DESCRIPTIONS.UNAUTHORIZED
+  })
   @UseGuards(JwtAuthGuard)
   @Post('check')
   public async checkToken(@Req() { user: payload }: RequestWithTokenPayload) {
     return payload;
+  }
+
+
+  @ApiResponse({
+    status: HttpStatus.OK,
+    type: SuccessRDO,
+    description: DESCRIPTIONS.SUCCESS_UPDATE_PASSWORD
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: DESCRIPTIONS.WRONG_CREDS
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: DESCRIPTIONS.NOT_FOUND_USER
+  })
+  @UseGuards(JwtAuthGuard)
+  @Post('change-password')
+  public async changePassword(@Req() { user }: RequestWithUser, @Body() dto: ChangeUserPasswordDTO) {
+    if (!user?.id) {
+      throw new UnauthorizedException('Incorrect user');
+    }
+    await this.authService.changePassword(user.id, dto);
+
+    return fillDTO(SuccessRDO, {
+      success: true
+    });
   }
 }

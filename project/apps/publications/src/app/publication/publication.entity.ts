@@ -1,7 +1,7 @@
-import { Entity, EntityIdType } from "@project/shared/core";
-import { BasePublication, PublicationStatus, PublicationType } from "@project/shared/app/types";
-import { PublicationTagEntity } from "../publication-tag/publication-tag.entity";
+import { BasePublication, PublicationStatus, PublicationType } from '@project/shared/app/types';
+import { Entity, EntityIdType } from '@project/shared/core';
 
+import { PublicationTagEntity } from '../publication-tag/publication-tag.entity';
 
 
 export class PublicationEntity<Publication extends BasePublication = BasePublication> implements BasePublication, Entity<EntityIdType, Publication> {
@@ -9,7 +9,8 @@ export class PublicationEntity<Publication extends BasePublication = BasePublica
   public id?: string;
   public tags: PublicationTagEntity[];
   public status: PublicationStatus;
-  public createdAt?: Date;
+  public publishedAt?: Date | null;
+  public createdAt: Date;
   public updatedAt?: Date;
   public isReposted: boolean;
   public currentOwnerId: string;
@@ -20,22 +21,22 @@ export class PublicationEntity<Publication extends BasePublication = BasePublica
   public comments?: number;
 
   constructor(data: Publication) {
-    this.populate(data)
+    this.populate(data);
   }
 
   protected populate(data: Publication) {
-    this.id = data.id
-    this.tags = (data.tags || []).map(tag => PublicationTagEntity.fromObject(tag))
-    this.type = data.type
-    this.createdAt = data.createdAt
-    this.currentOwnerId = data.currentOwnerId
-    this.isReposted = data.isReposted
-    this.status = data.status
-    this.updatedAt = data.updatedAt
-    this.sourceId = data.sourceId
-    this.originalOwnerId = data.originalOwnerId
-    this.likes = data.likes ?? 0
-    this.comments = data.comments ?? 0
+    this.id = data.id;
+    this.tags = (data.tags || []).map(tag => PublicationTagEntity.fromObject(tag));
+    this.type = data.type;
+    this.publishedAt = data.publishedAt;
+    this.currentOwnerId = data.currentOwnerId;
+    this.isReposted = data.isReposted;
+    this.status = data.status;
+    this.updatedAt = data.updatedAt;
+    this.sourceId = data.sourceId;
+    this.originalOwnerId = data.originalOwnerId;
+    this.likes = data.likes ?? 0;
+    this.comments = data.comments ?? 0;
   }
 
   protected toBasePOJO(): BasePublication {
@@ -45,30 +46,31 @@ export class PublicationEntity<Publication extends BasePublication = BasePublica
       type: this.type,
       likes: this.likes || 0,
       comments: this.comments || 0,
+      publishedAt: this.publishedAt,
       createdAt: this.createdAt,
       currentOwnerId: this.currentOwnerId,
       isReposted: this.isReposted,
       status: this.status,
       updatedAt: this.updatedAt,
       sourceId: this.sourceId,
-      originalOwnerId: this.originalOwnerId,
-    }
+      originalOwnerId: this.originalOwnerId
+    };
   }
 
   protected getPojo(): Omit<Publication, keyof BasePublication> {
-    return {} as Omit<Publication, keyof BasePublication>
+    return {} as Omit<Publication, keyof BasePublication>;
   }
 
   public toPOJO(): Publication {
-    const base = this.toBasePOJO()
-    const extensional = this.getPojo()
+    const base = this.toBasePOJO();
+    const extensional = this.getPojo();
     return {
       ...base,
       ...extensional
-    } as Publication
+    } as Publication;
   }
 
   static fromObject(data: BasePublication): PublicationEntity {
-    return new PublicationEntity(data)
+    return new PublicationEntity(data);
   }
 }

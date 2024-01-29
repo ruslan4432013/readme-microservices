@@ -1,6 +1,7 @@
+import { randomUUID } from 'node:crypto';
+
 import { Entity } from './entity.interface';
 import { Repository } from './repository.interface';
-import { randomUUID } from 'node:crypto';
 
 export abstract class BaseMemoryRepository<T extends Entity<string>>
   implements Repository<T>

@@ -1,5 +1,6 @@
+import { ConfigType, registerAs } from '@nestjs/config';
 import { plainToClass } from 'class-transformer';
-import { registerAs, ConfigType } from '@nestjs/config';
+
 import { JwtConfiguration } from './jwt.env';
 
 

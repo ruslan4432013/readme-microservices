@@ -1,10 +1,14 @@
-import { Injectable } from '@nestjs/common';
-import { LinkPublicationRepository } from "./link-publication.repository";
-import { CreateLinkPublicationDTO, UpdateLinkPublicationDTO } from "./dto";
-import { LinkPublicationEntity } from "./link-publication.entity";
-import { PublicationTagService } from "../../../publication-tag/publication-tag.service";
+import { Injectable, UnauthorizedException } from '@nestjs/common';
+
 import { randomUUID } from 'node:crypto';
-import { PublicationStatus, PublicationType } from "@project/shared/app/types";
+
+import { PublicationStatus, PublicationType } from '@project/shared/app/types';
+import { CreateLinkPublicationDTO, UpdateLinkPublicationDTO } from '@project/shared/transfer-objects';
+
+import { LinkPublicationEntity } from './link-publication.entity';
+import { LinkPublicationRepository } from './link-publication.repository';
+
+import { PublicationTagService } from '../../../publication-tag/publication-tag.service';
 
 @Injectable()
 export class LinkPublicationService {
@@ -15,15 +19,15 @@ export class LinkPublicationService {
   }
 
   public async findById(id: string) {
-    const document = await this.linkPublicationRepository.findById(id)
-    return document
+    const document = await this.linkPublicationRepository.findById(id);
+    return document;
   }
 
   public async create(dto: CreateLinkPublicationDTO) {
     const tags = await this.publicationTagService.createTags({
       titles: dto.tags || []
-    })
-    const id = randomUUID()
+    });
+    const id = randomUUID();
     const publication = new LinkPublicationEntity({
       id,
       originalOwnerId: dto.userId,
@@ -35,19 +39,27 @@ export class LinkPublicationService {
       isReposted: false,
       type: PublicationType.Link,
       status: PublicationStatus.Draft
-    })
-    const document = await this.linkPublicationRepository.save(publication)
+    });
+    const document = await this.linkPublicationRepository.save(publication);
 
-    return document
+    return document;
 
   }
 
-  public async update(id: string, dto: UpdateLinkPublicationDTO): Promise<LinkPublicationEntity> {
-    const pojoType = (await this.linkPublicationRepository.findById(id)).toPOJO()
-    const titles = dto.tags || pojoType.tags?.map(el => el.title) || []
+  public async update(id: string, updateLinkDTO: UpdateLinkPublicationDTO): Promise<LinkPublicationEntity> {
+    const { userId, ...dto } = updateLinkDTO;
+    const pojoType = (await this.linkPublicationRepository.findById(id)).toPOJO();
+
+    if (userId !== pojoType.currentOwnerId) {
+      throw new UnauthorizedException('User is not publication owner');
+    }
+
+    const titles = dto.tags || pojoType.tags?.map(el => el.title) || [];
     const newTags = await this.publicationTagService.createTags({
       titles
-    })
+    });
+
+
     const updatedLinkPublication = new LinkPublicationEntity({
       currentOwnerId: pojoType.currentOwnerId,
       isReposted: pojoType.isReposted,
@@ -59,12 +71,12 @@ export class LinkPublicationService {
       url: pojoType.url,
       description: pojoType.description,
       ...dto,
-      tags: newTags.map(el => el.toPOJO()),
-    })
-    return this.linkPublicationRepository.update(id, updatedLinkPublication)
+      tags: newTags.map(el => el.toPOJO())
+    });
+    return this.linkPublicationRepository.update(id, updatedLinkPublication);
   }
 
   public async delete(id: string) {
-    await this.linkPublicationRepository.deleteById(id)
+    await this.linkPublicationRepository.deleteById(id);
   }
 }

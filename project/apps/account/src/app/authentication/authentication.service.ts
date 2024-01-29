@@ -4,16 +4,18 @@ import {
   NotFoundException,
   UnauthorizedException
 } from '@nestjs/common';
-import { PublicationUserRepository } from '../publication-user/publication-user.repository';
-import { CreateUserDTO } from './dto/create-user.dto';
-import { PublicationUserEntity } from '../publication-user/publication-user.entity';
-import { AUTH_USER_MESSAGES } from './authentication.constant';
-import { AuthUser, RefreshTokenPayload, Token, TokenPayload, User } from '@project/shared/app/types';
-import { LoginUserDTO } from './dto/login-user.dto';
-import { JwtService } from '@nestjs/jwt';
-import { jwtConfig } from '@project/shared/config/account';
 import { ConfigType } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
+
+import { AuthUser, RefreshTokenPayload, Token, TokenPayload, User } from '@project/shared/app/types';
+import { jwtConfig } from '@project/shared/config/account';
 import { createJWTPayload } from '@project/shared/helpers';
+import { ChangeUserPasswordDTO, CreateUserDTO, LoginUserDTO } from '@project/shared/transfer-objects';
+
+import { AUTH_USER_MESSAGES } from './authentication.constant';
+
+import { PublicationUserEntity } from '../publication-user/publication-user.entity';
+import { PublicationUserRepository } from '../publication-user/publication-user.repository';
 import { RefreshTokenService } from '../refresh-token/refresh-token.service';
 
 @Injectable()
@@ -37,6 +39,7 @@ export class AuthenticationService {
       fullname,
       avatar: '',
       passwordHash: '',
+      createdAt: new Date(),
       subscribersIds: []
     };
 
@@ -102,6 +105,19 @@ export class AuthenticationService {
     return this.jwtService.signAsync(payload);
   }
 
+  public async changePassword(userId: string, payload: ChangeUserPasswordDTO) {
+    const { newPassword, currentPassword } = payload;
+    const userEntity = await this.publicationUserRepository.findById(userId);
+    if (!userEntity) {
+      throw new NotFoundException(`Incorrect user id ${userId}`);
+    }
+    if (!(await userEntity.comparePassword(currentPassword))) {
+      throw new UnauthorizedException(AUTH_USER_MESSAGES.PASSWORD_WRONG);
+    }
+    await userEntity.setPassword(newPassword);
+    return this.publicationUserRepository.update(userId, userEntity);
+  }
+
   public async getUserByEmail(email: string) {
     const existedUser = await this.publicationUserRepository.findByEmail(email);
 
@@ -110,5 +126,9 @@ export class AuthenticationService {
     }
 
     return existedUser;
+  }
+
+  public async getUsers(ids: string[]) {
+    return this.publicationUserRepository.findManyByIds(ids);
   }
 }

@@ -1,12 +1,13 @@
 import { Inject, Injectable } from '@nestjs/common';
+import { ConfigType } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { ConfigType } from '@nestjs/config';
 
-import { AuthenticationService } from '../authentication.service';
-import { jwtConfig } from '@project/shared/config/account';
 import { RefreshTokenPayload } from '@project/shared/app/types';
+import { jwtConfig } from '@project/shared/config/account';
+
 import { RefreshTokenService } from '../../refresh-token/refresh-token.service';
+import { AuthenticationService } from '../authentication.service';
 import { TokenNotExistsException } from '../exceptions/token-not-exists.exception';
 
 @Injectable()

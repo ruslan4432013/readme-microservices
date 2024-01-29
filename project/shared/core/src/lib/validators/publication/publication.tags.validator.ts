@@ -1,4 +1,5 @@
 import { ValidatorConstraint, ValidatorConstraintInterface } from "class-validator";
+
 import { PUBLICATION } from "./publication.constant";
 
 @ValidatorConstraint()

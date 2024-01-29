@@ -1,0 +1,72 @@
+# Login user by email and password
+POST http://localhost:3006/api/accounts/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "email": "ruslan4432014@gmail.com",
+  "password": "123456"
+}
+
+> {%
+  client.global.set("auth_token", response.body.accessToken)
+  client.global.set("refresh_token", response.body.refreshToken)
+%}
+
+###
+# Получение публикации по ID
+GET http://localhost:3006/api/publications/7761d28c-ad7a-46c1-a305-4447269481ba
+
+###
+# Create a video publication
+POST http://localhost:3006/api/publications/video HTTP/1.1
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "name": "Новое видео, которое больше 40 символов",
+  "link": "http://youtube.com/",
+  "tags": [
+    "vasya"
+  ]
+}
+
+###
+# Частичное обновление публикации
+PATCH http://localhost:3006/api/publications/f753333a-effb-4b70-bdba-c9416e0e9e8a HTTP/1.1
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "status": "Published"
+}
+
+###
+
+# Проверка репоста
+
+POST http://localhost:3006/api/publications/repost/9885c780-2ef5-4eb2-b459-4fb628a9b19b HTTP/1.1
+Authorization: Bearer {{auth_token}}
+
+###
+
+# Поиск с тегами
+GET http://localhost:3006/api/publications?tags[]=adult&tags[]=vasya
+Authorization: Bearer {{auth_token}}
+
+###
+# Список постов
+GET http://localhost:3006/api/publications
+Authorization: Bearer {{auth_token}}
+
+###
+
+# Список постов пользователя
+GET http://localhost:3006/api/publications/user
+Authorization: Bearer {{auth_token}}
+
+### Проверка поиска
+
+GET http://localhost:3006/api/publications/find?search=проверка
+Authorization: Bearer {{auth_token}}
+
+###

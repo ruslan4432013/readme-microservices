@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
-
-import { FileUploaderService } from './file-uploader.service';
-import { FileUploaderController } from './file-uploader.controller';
 import { ConfigService } from '@nestjs/config';
-import { ServeStaticModule } from '@nestjs/serve-static';
-import { FileRepository } from './file.repository';
 import { MongooseModule } from '@nestjs/mongoose';
+import { ServeStaticModule } from '@nestjs/serve-static';
+
+import { FileUploaderController } from './file-uploader.controller';
+import { FileUploaderService } from './file-uploader.service';
 import { FileModel, FileSchema } from './file.model';
+import { FileRepository } from './file.repository';
 
 const SERVE_ROOT = '/static';
 

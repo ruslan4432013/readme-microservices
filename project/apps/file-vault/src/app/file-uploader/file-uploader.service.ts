@@ -1,17 +1,19 @@
 import 'multer';
 import { Inject, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
-import { ensureDir } from 'fs-extra';
-import { writeFile } from 'node:fs/promises';
-import { join } from 'node:path';
 import dayjs from 'dayjs';
-import { randomUUID } from 'node:crypto';
+import { ensureDir } from 'fs-extra';
 import { extension } from 'mime-types';
 
-import { FileVaultConfig } from '@project/shared/config/file-vault';
-import { FileRepository } from './file.repository';
-import { FileEntity } from './file.entity';
+import { randomUUID } from 'node:crypto';
+import { writeFile } from 'node:fs/promises';
+import { extname, join } from 'node:path';
+
 import { StoredFile } from '@project/shared/app/types';
+import { FileVaultConfig } from '@project/shared/config/file-vault';
+
+import { FileEntity } from './file.entity';
+import { FileRepository } from './file.repository';
 
 @Injectable()
 export class FileUploaderService {
@@ -38,11 +40,21 @@ export class FileUploaderService {
     return join(year, month);
   }
 
+  private getExtension(file: Express.Multer.File): string {
+    if (file.mimetype) {
+      const ext = extension(file.mimetype);
+      if (ext) {
+        return ext;
+      }
+    }
+    return extname(file.originalname).slice(1);
+  }
+
   public async writeFile(file: Express.Multer.File): Promise<StoredFile> {
     try {
       const uploadDirectoryPath = this.getUploadDirectoryPath();
       const subDirectory = this.getSubUploadDirectoryPath();
-      const fileExtension = extension(file.mimetype) || '';
+      const fileExtension = this.getExtension(file);
       const filename = `${randomUUID()}.${fileExtension}`;
 
       const path = this.getDestinationFilePath(filename);

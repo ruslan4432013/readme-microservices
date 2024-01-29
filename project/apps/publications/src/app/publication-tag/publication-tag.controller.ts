@@ -1,9 +1,11 @@
 import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post } from "@nestjs/common";
-import { PublicationTagService } from "./publication-tag.service";
+
 import { fillDTO } from "@project/shared/helpers";
-import { TagRdo } from "./rdo/publication-tag.rdo";
+
 import { CreateTagDTO } from "./dto/create-tag.dto";
 import { UpdateTagDTO } from "./dto/update-tag.dto";
+import { PublicationTagService } from "./publication-tag.service";
+import { TagRdo } from "./rdo/publication-tag.rdo";
 
 @Controller('tags')
 export class PublicationTagController {

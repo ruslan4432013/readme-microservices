@@ -33,6 +33,9 @@
       "@project/shared/helpers": ["shared/helpers/src/index.ts"],
       "@project/shared/publications/models": [
         "shared/publications/models/src/index.ts"
+      ],
+      "@project/shared/transfer-objects": [
+        "shared/transfer-objects/src/index.ts"
       ]
     }
   },

@@ -1,9 +1,12 @@
-import { BasePostgresRepository } from "@project/shared/core";
-import { QuotePublicationEntity } from "./quote-publication.entity";
-import { PublicationStatus, PublicationType, QuotePublication } from "@project/shared/app/types";
-import { Injectable, NotFoundException } from "@nestjs/common";
-import { PrismaClientService } from "@project/shared/publications/models";
-import { PUBLICATION_QUERY } from "../../publication.constant";
+import { Injectable, NotFoundException } from '@nestjs/common';
+
+import { PublicationStatus, PublicationType, QuotePublication } from '@project/shared/app/types';
+import { BasePostgresRepository } from '@project/shared/core';
+import { PrismaClientService } from '@project/shared/publications/models';
+
+import { QuotePublicationEntity } from './quote-publication.entity';
+
+import { PUBLICATION_QUERY } from '../../publication.constant';
 
 
 @Injectable()
@@ -17,7 +20,7 @@ export class QuotePublicationRepository extends BasePostgresRepository<
   }
 
   public async save(entity: QuotePublicationEntity): Promise<QuotePublicationEntity> {
-    const { text, author, tags, ...publication } = entity
+    const { text, author, tags, ...publication } = entity;
     const document = await this.client.quotePublication.create({
       include: PUBLICATION_QUERY.INCLUDE,
       data: {
@@ -35,12 +38,12 @@ export class QuotePublicationRepository extends BasePostgresRepository<
             sourceId: publication.sourceId,
             status: publication.status,
             comments: {
-              connect: [],
+              connect: []
             }
           }
         }
       }
-    })
+    });
     return this.createEntityFromDocument({
       ...document.publication,
       ...document,
@@ -49,16 +52,16 @@ export class QuotePublicationRepository extends BasePostgresRepository<
       comments: document.publication._count.comments,
       type: document.publication.type as PublicationType.Quote,
       status: document.publication.status as PublicationStatus
-    })
+    });
   }
 
-  public async findById(id: QuotePublicationEntity["id"]): Promise<QuotePublicationEntity> {
+  public async findById(id: QuotePublicationEntity['id']): Promise<QuotePublicationEntity> {
     const document = await this.client.quotePublication.findFirst({
       where: {
         publicationId: id
       },
-      include: PUBLICATION_QUERY.INCLUDE,
-    })
+      include: PUBLICATION_QUERY.INCLUDE
+    });
 
     if (!document) {
       throw new NotFoundException(`Quote Publication with id ${id} not found.`);
@@ -68,15 +71,16 @@ export class QuotePublicationRepository extends BasePostgresRepository<
       ...document,
       id: document.publication.id,
       likes: document.publication._count.like,
+      publishedAt: document.publication.publishedAt,
       comments: document.publication._count.comments,
       type: document.publication.type as PublicationType.Quote,
       status: document.publication.status as PublicationStatus
-    })
-    return entity
+    });
+    return entity;
   }
 
-  public async update(id: QuotePublicationEntity["id"], entity: QuotePublicationEntity): Promise<QuotePublicationEntity> {
-    const pojoDocument = entity.toPOJO()
+  public async update(id: QuotePublicationEntity['id'], entity: QuotePublicationEntity): Promise<QuotePublicationEntity> {
+    const pojoDocument = entity.toPOJO();
     await this.client.publication.update({
       where: {
         id
@@ -92,7 +96,7 @@ export class QuotePublicationRepository extends BasePostgresRepository<
         tags: {
           set: pojoDocument.tags?.map(({ id }) => ({ id }))
         }
-      },
+      }
     });
 
     const document = await this.client.quotePublication.update({
@@ -101,26 +105,27 @@ export class QuotePublicationRepository extends BasePostgresRepository<
       },
       data: {
         text: pojoDocument.text,
-        author: pojoDocument.author,
+        author: pojoDocument.author
       },
       include: PUBLICATION_QUERY.INCLUDE
-    })
+    });
     return this.createEntityFromDocument({
       ...document,
       ...document.publication,
       id: document.publication.id,
       likes: document.publication._count.like,
+      publishedAt: document.publication.publishedAt,
       comments: document.publication._count.comments,
       type: document.publication.type as PublicationType.Quote,
       status: document.publication.status as PublicationStatus
     });
   }
 
-  public async deleteById(id: QuotePublicationEntity["id"]): Promise<void> {
+  public async deleteById(id: QuotePublicationEntity['id']): Promise<void> {
     await this.client.publication.delete({
       where: {
         id
       }
-    })
+    });
   }
 }

@@ -1,10 +1,14 @@
-import { Injectable } from '@nestjs/common';
-import { VideoPublicationRepository } from "./video-publication.repository";
-import { CreateVideoPublicationDTO, UpdateVideoPublicationDTO } from "./dto";
-import { VideoPublicationEntity } from "./video-publication.entity";
-import { PublicationTagService } from "../../../publication-tag/publication-tag.service";
+import { Injectable, UnauthorizedException } from '@nestjs/common';
+
 import { randomUUID } from 'node:crypto';
-import { PublicationStatus, PublicationType } from "@project/shared/app/types";
+
+import { PublicationStatus, PublicationType } from '@project/shared/app/types';
+import { CreateVideoPublicationDTO, UpdateVideoPublicationDTO } from '@project/shared/transfer-objects';
+
+import { VideoPublicationEntity } from './video-publication.entity';
+import { VideoPublicationRepository } from './video-publication.repository';
+
+import { PublicationTagService } from '../../../publication-tag/publication-tag.service';
 
 @Injectable()
 export class VideoPublicationService {
@@ -15,19 +19,19 @@ export class VideoPublicationService {
   }
 
   public async findById(id: string) {
-    const document = await this.videoPublicationRepository.findById(id)
-    return document
+    const document = await this.videoPublicationRepository.findById(id);
+    return document;
   }
 
   public async create(dto: CreateVideoPublicationDTO) {
     const tags = await this.publicationTagService.createTags({
       titles: dto.tags || []
-    })
-    const id = randomUUID()
+    });
+    const id = randomUUID();
     const publication = new VideoPublicationEntity({
       id,
-      originalOwnerId: dto.ownerId,
-      currentOwnerId: dto.ownerId,
+      originalOwnerId: dto.userId,
+      currentOwnerId: dto.userId,
       tags,
       name: dto.name,
       link: dto.link,
@@ -35,19 +39,25 @@ export class VideoPublicationService {
       isReposted: false,
       type: PublicationType.Video,
       status: PublicationStatus.Draft
-    })
-    const document = await this.videoPublicationRepository.save(publication)
+    });
+    const document = await this.videoPublicationRepository.save(publication);
 
-    return document
+    return document;
 
   }
 
-  public async update(id: string, dto: UpdateVideoPublicationDTO): Promise<VideoPublicationEntity> {
-    const pojoType = (await this.videoPublicationRepository.findById(id)).toPOJO()
-    const titles = dto.tags || pojoType.tags?.map(el => el.title) || []
+  public async update(id: string, updateVideoDTO: UpdateVideoPublicationDTO): Promise<VideoPublicationEntity> {
+    const { userId, ...dto } = updateVideoDTO;
+    const pojoType = (await this.videoPublicationRepository.findById(id)).toPOJO();
+
+    if (userId !== pojoType.currentOwnerId) {
+      throw new UnauthorizedException('User is not publication owner');
+    }
+
+    const titles = dto.tags || pojoType.tags?.map(el => el.title) || [];
     const newTags = await this.publicationTagService.createTags({
       titles
-    })
+    });
     const updatedVideoPublication = new VideoPublicationEntity({
       currentOwnerId: pojoType.currentOwnerId,
       isReposted: pojoType.isReposted,
@@ -59,12 +69,12 @@ export class VideoPublicationService {
       name: pojoType.name,
       link: pojoType.link,
       ...dto,
-      tags: newTags.map(el => el.toPOJO()),
-    })
-    return this.videoPublicationRepository.update(id, updatedVideoPublication)
+      tags: newTags.map(el => el.toPOJO())
+    });
+    return this.videoPublicationRepository.update(id, updatedVideoPublication);
   }
 
   public async delete(id: string) {
-    await this.videoPublicationRepository.deleteById(id)
+    await this.videoPublicationRepository.deleteById(id);
   }
 }

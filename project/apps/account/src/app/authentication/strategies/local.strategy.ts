@@ -1,9 +1,10 @@
+import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-local';
-import { Injectable } from '@nestjs/common';
+
+import { User } from '@project/shared/app/types';
 
 import { AuthenticationService } from '../authentication.service';
-import { User } from '@project/shared/app/types';
 
 const USERNAME_FIELD_NAME = 'email';
 

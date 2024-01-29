@@ -1,0 +1,57 @@
+# Login user by email and password
+POST http://localhost:3006/api/accounts/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "email": "ruslan4432013@gmail.com",
+  "password": "123456"
+}
+
+> {%
+  client.global.set("auth_token", response.body.accessToken)
+  client.global.set("refresh_token", response.body.refreshToken)
+%}
+
+###
+# Получение публикации по ID
+GET http://localhost:3006/api/publications/photo/8881b27a-ed94-431a-9f45-99d661d88c87
+
+
+###
+# Create a photo publication
+POST http://localhost:3006/api/publications/photo HTTP/1.1
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "photo": "Здесь должно быть фото",
+  "tags": [
+    "boaut",
+    "coundars",
+    "generator"
+  ]
+}
+
+
+###
+# Удаление видео-публикации по ID
+DELETE http://localhost:3006/api/publications/photo/8881b27a-ed94-431a-9f45-99d661d88c87
+Authorization: Bearer {{auth_token}}
+
+
+###
+# Частичное обновление публикации
+PATCH http://localhost:3006/api/publications/photo/8881b27a-ed94-431a-9f45-99d661d88c87 HTTP/1.1
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "photo": "Здесь новое фото",
+  "tags": [
+    "boaut",
+    "coundars",
+    "generator"
+  ]
+}
+
+###

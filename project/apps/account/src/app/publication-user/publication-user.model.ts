@@ -1,20 +1,21 @@
-import { Document } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document } from 'mongoose';
+
 import { AuthUser } from '@project/shared/app/types';
 
 @Schema({
   collection: 'accounts',
-  timestamps: true,
+  timestamps: true
 })
 export class PublicationUserModel extends Document implements AuthUser {
   @Prop({
     required: true,
-    unique: true,
+    unique: true
   })
   public email: string;
 
   @Prop({
-    required: true,
+    required: true
   })
   public fullname: string;
 
@@ -22,7 +23,7 @@ export class PublicationUserModel extends Document implements AuthUser {
   public avatar: string;
 
   @Prop({
-    required: true,
+    required: true
   })
   public passwordHash: string;
 
@@ -30,6 +31,8 @@ export class PublicationUserModel extends Document implements AuthUser {
     default: []
   })
   public subscribersIds: string[];
+
+  createdAt: Date;
 }
 
 export const PublicationUserSchema = SchemaFactory.createForClass(PublicationUserModel);

@@ -1,8 +1,10 @@
-import { Expose } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
-import { PROPERTY } from '../authentication.constant';
+import { Expose } from 'class-transformer';
 
-export class LoggedUserRdo {
+import { PROPERTY } from '../../account.constant';
+
+
+export class LoggedUserRDO {
   @ApiProperty(PROPERTY.ID)
   @Expose()
   public id: string;

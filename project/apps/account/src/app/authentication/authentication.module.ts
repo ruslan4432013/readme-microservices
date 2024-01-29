@@ -1,14 +1,17 @@
 import { Module } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { JwtModule } from '@nestjs/jwt';
+
+import { getJwtOptions } from '@project/shared/config/account';
+
 import { AuthenticationController } from './authentication.controller';
 import { AuthenticationService } from './authentication.service';
-import { PublicationUserModule } from '../publication-user/publication-user.module';
-import { JwtModule } from '@nestjs/jwt';
-import { ConfigService } from '@nestjs/config';
-import { getJwtOptions } from '@project/shared/config/account';
 import { JwtAccessStrategy } from './strategies/jwt-access.strategy';
-import { NotifyModule } from '../notify/notify.module';
-import { LocalStrategy } from './strategies/local.strategy';
 import { JwtRefreshStrategy } from './strategies/jwt-refresh.strategy';
+import { LocalStrategy } from './strategies/local.strategy';
+
+import { NotifyModule } from '../notify/notify.module';
+import { PublicationUserModule } from '../publication-user/publication-user.module';
 import { RefreshTokenModule } from '../refresh-token/refresh-token.module';
 
 @Module({

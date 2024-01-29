@@ -20,6 +20,7 @@ export interface ApplicationConfig {
     publications: string
     files: string
     notify: string
+    static: string
   }
 }
 
@@ -32,7 +33,8 @@ const validationSchema = Joi.object<ApplicationConfig, true>({
     account: Joi.string().required(),
     publications: Joi.string().required(),
     files: Joi.string().required(),
-    notify: Joi.string().required()
+    notify: Joi.string().required(),
+    static: Joi.string().required()
   })
 });
 
@@ -53,7 +55,8 @@ function getConfig(): ApplicationConfig {
       account: process.env.ACCOUNT_URL!,
       publications: process.env.PUBLICATIONS_URL!,
       files: process.env.FILE_LOADER_URL!,
-      notify: process.env.NOTIFY_URL!
+      notify: process.env.NOTIFY_URL!,
+      static: process.env.STATIC_URL!
     }
   };
 

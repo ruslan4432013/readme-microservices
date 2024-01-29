@@ -13,14 +13,16 @@ import {
 } from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
 import { ApiCreatedResponse, ApiNoContentResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { FormDataRequest, MemoryStoredFile } from 'nestjs-form-data';
 
 import { RequestWithTokenPayload } from '@project/shared/app/types';
 import { applicationConfig } from '@project/shared/config/bff';
 import { AxiosExceptionFilter } from '@project/shared/core';
 import {
-  CreatePhotoPublicationDTO,
   PhotoPublicationRDO, UpdatePhotoPublicationDTO
 } from '@project/shared/transfer-objects';
+
+import { PhotoFormDataDTO } from './dto/photo-form-data.dto';
 
 import { DESCRIPTIONS, PUBLICATION_ERROR_MESSAGES } from '../application.constant';
 import { CheckAuthGuard } from '../guards/check-auth.guard';
@@ -43,19 +45,49 @@ export class PhotoPublicationController {
   @ApiCreatedResponse({ description: DESCRIPTIONS.CREATE })
   @UseGuards(CheckAuthGuard)
   @UseInterceptors(UserIdInterceptor)
+  @FormDataRequest()
   @Post('')
-  public async create(@Body() dto: CreatePhotoPublicationDTO) {
-    const { data } = await this.httpService.axiosRef.post(`${this.appConfig.url.publications}/${POSTFIX}`, dto);
+  public async create(@Body() dto: PhotoFormDataDTO) {
+
+    const photo = await this.getPhoto(dto.file);
+    const { data } = await this.httpService.axiosRef.post(`${this.appConfig.url.publications}/${POSTFIX}`, {
+      tags: dto.tags,
+      photo: photo,
+      userId: dto.userId
+    });
     return data;
   }
 
   @ApiOkResponse({ description: DESCRIPTIONS.UPDATE })
   @UseGuards(CheckAuthGuard)
   @UseInterceptors(UserIdInterceptor)
+  @FormDataRequest()
   @Patch(':id')
-  public async update(@Param('id') id: string, @Body() dto: UpdatePhotoPublicationDTO) {
-    const { data } = await this.httpService.axiosRef.patch(`${this.appConfig.url.publications}/${POSTFIX}/${id}`, dto);
+  public async update(@Param('id') id: string, @Body() dto: PhotoFormDataDTO) {
+
+    const photo = await this.getPhoto(dto.file);
+
+    const { data } = await this.httpService.axiosRef.patch(`${this.appConfig.url.publications}/${POSTFIX}/${id}`, {
+      tags: dto.tags,
+      photo: photo,
+      userId: dto.userId
+    });
     return data;
+  }
+
+  private async getPhoto(file: MemoryStoredFile) {
+    const formData = new FormData();
+    formData.set('file', new Blob([file.buffer], {
+      type: file.mimetype
+    }));
+    const { data } = await this.httpService.axiosRef.post(`${this.appConfig.url.files}/upload`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+
+    const photo = `${this.appConfig.url.static}/static/${data.subDirectory}/${data.hashName}`;
+    return photo;
   }
 
   @ApiNoContentResponse({ description: DESCRIPTIONS.REMOVE })

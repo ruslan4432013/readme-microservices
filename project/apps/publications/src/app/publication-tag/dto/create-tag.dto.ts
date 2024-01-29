@@ -1,15 +1,15 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, Validate } from "class-validator";
+import { IsString, Validate } from 'class-validator';
 
-import { TagTitleValidator } from "@project/shared/core";
+import { TagTitleValidator } from '@project/shared/core';
 
-import { PROPERTY } from '../publication-tag.constant';
+import { ERROR_MESSAGES, PROPERTY } from '../publication-tag.constant';
 
 export class CreateTagDTO {
   @ApiProperty(PROPERTY.TITLE)
   @IsString()
   @Validate(TagTitleValidator, {
-    message: 'Wrong tag title',
+    message: ERROR_MESSAGES.WRONG_TAG_TITLE
   })
   public title: string;
 }

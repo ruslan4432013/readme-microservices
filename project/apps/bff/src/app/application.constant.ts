@@ -138,3 +138,7 @@ export const DEFAULT = {
   PAGE_COUNT: 1,
   SORT_VARIANT: SortVariants.Date
 };
+
+
+export const MAX_PHOTO_PUBLICATION_SIZE = 1e6;
+export const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png'];

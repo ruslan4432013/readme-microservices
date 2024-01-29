@@ -1,5 +1,6 @@
 import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
+import { NestjsFormDataModule } from 'nestjs-form-data';
 
 import { ConfigBffModule } from '@project/shared/config/bff';
 import { getHttpModuleOptions } from '@project/shared/config/bff';
@@ -22,6 +23,7 @@ import { PublicationLikeController } from './publication-like.controller';
 @Module({
   imports: [
     ConfigBffModule,
+    NestjsFormDataModule,
     HttpModule.registerAsync(getHttpModuleOptions())
   ],
   controllers: [

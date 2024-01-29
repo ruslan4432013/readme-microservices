@@ -16,22 +16,22 @@ Content-Type: application/json
 # Получение публикации по ID
 GET http://localhost:3006/api/publications/photo/8881b27a-ed94-431a-9f45-99d661d88c87
 
-
-###
-# Create a photo publication
-POST http://localhost:3006/api/publications/photo HTTP/1.1
+### Create a photo publication
+POST http://localhost:3006/api/publications/photo
 Authorization: Bearer {{auth_token}}
-Content-Type: application/json
+Content-Type: multipart/form-data; boundary=WebAppBoundary
 
-{
-  "photo": "Здесь должно быть фото",
-  "tags": [
-    "boaut",
-    "coundars",
-    "generator"
-  ]
-}
+--WebAppBoundary
+Content-Disposition: form-data; name="tags"
+Content-Type: text/plain
 
+supers,analogs,amazing
+--WebAppBoundary
+Content-Disposition: form-data; name="file"; filename="nest_img.jpg"
+Content-Type: image/jpeg
+
+< ../../../assets/nest_img.jpg
+--WebAppBoundary--
 
 ###
 # Удаление видео-публикации по ID

@@ -1,4 +1,5 @@
 import { IsEmail, IsNotEmpty } from 'class-validator';
+
 import { EMAIL_SUBSCRIBER_MESSAGES } from '../email-subscriber.constant';
 
 export class CreateSubscriberDTO {

@@ -1,7 +1,8 @@
 import { Expose } from 'class-transformer';
+
 import { PublicationRdo } from './publication.rdo';
 
-export class PublicationWithPaginationRdo<Rdo extends PublicationRdo = PublicationRdo> {
+export class PublicationWithPaginationRDO<Rdo extends PublicationRdo = PublicationRdo> {
   @Expose()
   public entities: Rdo[];
 

@@ -1,24 +1,25 @@
-import { Expose, Type } from "class-transformer";
-import { TagRdo } from "../../publication-tag/rdo/publication-tag.rdo";
+import { Expose, Type } from 'class-transformer';
+
+import { TagRdo } from '../../publication-tag/rdo/publication-tag.rdo';
 
 export class PublicationRdo {
   @Expose()
-  id: string
+  id: string;
 
   @Expose()
-  type: string
+  type: string;
 
   @Expose()
-  likes: number
+  likes: number;
 
   @Expose()
-  comments: number
+  comments: number;
 
   @Expose()
-  createdAt: Date
+  publishedAt: Date;
 
   @Expose()
-  currentOwnerId: string
+  currentOwnerId: string;
 
   @Expose()
   link: string;

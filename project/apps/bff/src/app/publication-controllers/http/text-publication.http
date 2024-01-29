@@ -1,0 +1,58 @@
+# Login user by email and password
+POST http://localhost:3006/api/accounts/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "email": "ruslan4432013@gmail.com",
+  "password": "123456"
+}
+
+> {%
+  client.global.set("auth_token", response.body.accessToken)
+  client.global.set("refresh_token", response.body.refreshToken)
+%}
+
+###
+# Получение публикации по ID
+GET http://localhost:3006/api/publications/text/5d362df6-7122-4ff9-a1a6-5c4c5852bf8b
+
+
+###
+# Create a text publication
+POST http://localhost:3006/api/publications/text HTTP/1.1
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "name": "Здесь должно быть фото",
+  "announcement": "Fight ho! vandalize to be burned.вClosest shames feels most mans.Ubi est grandis frondator на 50 символов",
+  "text": "Fight ho! vandalize to be burned.вClosest shames feels most mans.Ubi est grandis frondator? Fight ho! vandalize to be burned.вClosest shames feels most mans.Ubi est grandis frondator?",
+  "tags": [
+    "boaut",
+    "coundars",
+    "generator"
+  ]
+}
+
+###
+# Удаление видео-публикации по ID
+DELETE http://localhost:3006/api/publications/text/5d362df6-7122-4ff9-a1a6-5c4c5852bf8b
+Authorization: Bearer {{auth_token}}
+
+###
+# Частичное обновление публикации
+PATCH http://localhost:3006/api/publications/text/5d362df6-7122-4ff9-a1a6-5c4c5852bf8b HTTP/1.1
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "text": "Здесь другой текст, должен быть больше 100 символов, другой текст, должен быть больше 100 символов, другой текст, должен быть больше 100 символов, другой текст, должен быть больше 100 символов",
+  "tags": [
+    "boaut",
+    "coundars",
+    "generator"
+  ]
+}
+
+###
+

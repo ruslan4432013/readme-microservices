@@ -1,15 +1,22 @@
 import { registerAs } from '@nestjs/config';
 import * as Joi from 'joi';
 
+import * as process from 'process';
+
 const DEFAULT_PORT = 3002;
 const DEFAULT_MONGO_PORT = 27017;
 const ENVIRONMENTS = ['development', 'production', 'stage'] as const;
 const DEFAULT_RABBIT_PORT = 5672;
 const DEFAULT_SMTP_PORT = 25;
+const DEFAULT_HTTP_CLIENT_MAX_REDIRECTS = 5;
+const DEFAULT_HTTP_CLIENT_TIMEOUT = 5000;
+
 
 type Environment = typeof ENVIRONMENTS[number];
 
 export interface NotifyConfig {
+  httpClientMaxRedirects: number,
+  httpClientTimeout: number
   environment: string;
   port: number;
   uploadDirectory: string;
@@ -36,9 +43,14 @@ export interface NotifyConfig {
     password: string;
     from: string;
   },
+  url: {
+    publications: string
+  }
 }
 
-const validationSchema = Joi.object({
+const validationSchema = Joi.object<NotifyConfig, true>({
+  httpClientMaxRedirects: Joi.number(),
+  httpClientTimeout: Joi.number(),
   environment: Joi.string().valid(...ENVIRONMENTS).required(),
   port: Joi.number().port().default(DEFAULT_PORT),
   uploadDirectory: Joi.string().required(),
@@ -64,6 +76,9 @@ const validationSchema = Joi.object({
     user: Joi.string().required(),
     password: Joi.string().required(),
     from: Joi.string().required()
+  }),
+  url: Joi.object({
+    publications: Joi.string().required()
   })
 });
 
@@ -78,6 +93,8 @@ function getConfig(): NotifyConfig {
   const config: NotifyConfig = {
     environment: process.env.NODE_ENV as Environment,
     port: parseInt(process.env.PORT || `${DEFAULT_PORT}`, 10),
+    httpClientMaxRedirects: parseInt(process.env.HTTP_CLIENT_MAX_REDIRECTS || `${DEFAULT_HTTP_CLIENT_MAX_REDIRECTS}`, 10),
+    httpClientTimeout: parseInt(process.env.HTTP_CLIENT_TIMEOUT || `${DEFAULT_HTTP_CLIENT_TIMEOUT}`, 10),
     uploadDirectory: process.env.UPLOAD_DIRECTORY_PATH!,
     db: {
       host: process.env.MONGO_HOST!,
@@ -101,6 +118,9 @@ function getConfig(): NotifyConfig {
       user: process.env.MAIL_USER_NAME!,
       password: process.env.MAIL_USER_PASSWORD!,
       from: process.env.MAIL_FROM!
+    },
+    url: {
+      publications: process.env.PUBLICATIONS_URL!
     }
   };
 

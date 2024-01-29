@@ -1,6 +1,3 @@
-import { ApiPropertyOptions } from '@nestjs/swagger';
-
-
 export const AUTH_USER_MESSAGES = {
   EXISTS: 'User with this email exists',
   NOT_FOUND: 'User not found',
@@ -9,37 +6,15 @@ export const AUTH_USER_MESSAGES = {
 };
 
 
-export const PROPERTY = {
-  ID: {
-    description: 'The uniq user ID',
-    example: '7fe130bd-f81b-4ff6-b570-cd2726e8c4a4'
-  },
-  AVATAR: {
-    description: 'User avatar path',
-    example: 'http://localhost:3000/static/avatar-user.jpg'
-  },
-  PASSWORD: {
-    description: 'User password',
-    example: '123456',
-    minimum: 6,
-    maximum: 12
-  },
-  FULLNAME: {
-    description:
-      'User\'s last name and first name',
-    example: 'Adam Smith',
-    minimum: 3,
-    maximum: 50
-
-  },
-  EMAIL: {
-    description: 'User unique address',
-    example: 'user@user.ru'
-  },
-  ACCESS_TOKEN: {
-    description: 'Access token',
-  },
-  REFRESH_TOKEN: {
-    description: 'Refresh token',
-  },
-} satisfies Record<string, ApiPropertyOptions>;
+export const DESCRIPTIONS = {
+  REGISTER: 'The new user has been successfully created.',
+  USERS: 'Get users by id list',
+  FOUND_USER: 'Detail info about user',
+  UNAUTHORIZED: 'User unauthorized',
+  CHECk: 'Check user token',
+  NOT_FOUND_USER: 'User not found',
+  LOGGED_SUCCESS: 'User has been successfully logged',
+  WRONG_CREDS: 'Password or Login is wrong.',
+  REFRESHED: 'Get a new access/refresh tokens',
+  SUCCESS_UPDATE_PASSWORD: 'User password has been successfully changed.'
+};

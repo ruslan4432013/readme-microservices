@@ -1,7 +1,8 @@
+import { NotFoundException } from '@nestjs/common';
 import { Document, Model } from 'mongoose';
+
 import { Entity, EntityIdType } from './entity.interface';
 import { Repository } from './repository.interface';
-import { NotFoundException } from '@nestjs/common';
 
 export abstract class BaseMongoRepository<
   EntityType extends Entity<EntityIdType>,

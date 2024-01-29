@@ -1,8 +1,9 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+
 import { RefreshTokenModel, RefreshTokenSchema } from './refresh-token.model';
-import { RefreshTokenService } from './refresh-token.service';
 import { RefreshTokenRepository } from './refresh-token.repository';
+import { RefreshTokenService } from './refresh-token.service';
 
 @Module({
   imports: [MongooseModule.forFeature([

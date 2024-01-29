@@ -15,6 +15,7 @@ model Publication {
   id              String            @id @default(uuid())
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
+  publishedAt     DateTime?
   isReposted      Boolean           @map("is_reposted")
   status          PublicationStatus
   type            PublicationType

@@ -1,4 +1,5 @@
 import { ArrayNotEmpty, IsArray, IsOptional, IsString, IsUrl, MaxLength, Validate } from "class-validator";
+
 import { PUBLICATION, PublicationTagsValidator, TagTitleValidator } from "@project/shared/core";
 
 export class CreateLinkPublicationDTO {

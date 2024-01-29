@@ -1,7 +1,8 @@
-import { ConfigService } from '@nestjs/config';
-import { getRabbitMQConnectionString } from './common';
-import { RabbitMQConfig } from '@golevelup/nestjs-rabbitmq';
 import { AsyncModuleConfig } from '@golevelup/nestjs-modules/lib/dynamicModules';
+import { RabbitMQConfig } from '@golevelup/nestjs-rabbitmq';
+import { ConfigService } from '@nestjs/config';
+
+import { getRabbitMQConnectionString } from './common';
 
 export function getRabbitMQOptions(optionSpace: string): AsyncModuleConfig<RabbitMQConfig> {
   return {

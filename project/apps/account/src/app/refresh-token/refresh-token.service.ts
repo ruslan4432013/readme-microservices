@@ -1,12 +1,14 @@
 
-import { RefreshTokenRepository } from './refresh-token.repository';
 import { Inject, Injectable } from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
 import dayjs from 'dayjs';
-import { RefreshTokenEntity } from './refresh-token.entity';
-import { jwtConfig } from '@project/shared/config/account';
+
 import { RefreshTokenPayload } from '@project/shared/app/types';
+import { jwtConfig } from '@project/shared/config/account';
 import { parseTime } from '@project/shared/helpers';
+
+import { RefreshTokenEntity } from './refresh-token.entity';
+import { RefreshTokenRepository } from './refresh-token.repository';
 
 @Injectable()
 export class RefreshTokenService {

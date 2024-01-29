@@ -1,10 +1,14 @@
-import { Injectable } from '@nestjs/common';
-import { QuotePublicationRepository } from "./quote-publication.repository";
-import { CreateQuotePublicationDTO, UpdateQuotePublicationDTO } from "./dto";
-import { QuotePublicationEntity } from "./quote-publication.entity";
-import { PublicationTagService } from "../../../publication-tag/publication-tag.service";
+import { Injectable, UnauthorizedException } from '@nestjs/common';
+
 import { randomUUID } from 'node:crypto';
-import { PublicationStatus, PublicationType } from "@project/shared/app/types";
+
+import { PublicationStatus, PublicationType } from '@project/shared/app/types';
+import { CreateQuotePublicationDTO, UpdateQuotePublicationDTO } from '@project/shared/transfer-objects';
+
+import { QuotePublicationEntity } from './quote-publication.entity';
+import { QuotePublicationRepository } from './quote-publication.repository';
+
+import { PublicationTagService } from '../../../publication-tag/publication-tag.service';
 
 @Injectable()
 export class QuotePublicationService {
@@ -15,19 +19,19 @@ export class QuotePublicationService {
   }
 
   public async findById(id: string) {
-    const document = await this.quotePublicationRepository.findById(id)
-    return document
+    const document = await this.quotePublicationRepository.findById(id);
+    return document;
   }
 
   public async create(dto: CreateQuotePublicationDTO) {
     const tags = await this.publicationTagService.createTags({
       titles: dto.tags || []
-    })
-    const id = randomUUID()
+    });
+    const id = randomUUID();
     const publication = new QuotePublicationEntity({
       id,
-      originalOwnerId: dto.ownerId,
-      currentOwnerId: dto.ownerId,
+      originalOwnerId: dto.userId,
+      currentOwnerId: dto.userId,
       tags,
       text: dto.text,
       author: dto.author,
@@ -35,19 +39,24 @@ export class QuotePublicationService {
       isReposted: false,
       type: PublicationType.Quote,
       status: PublicationStatus.Draft
-    })
-    const document = await this.quotePublicationRepository.save(publication)
+    });
+    const document = await this.quotePublicationRepository.save(publication);
 
-    return document
+    return document;
 
   }
 
-  public async update(id: string, dto: UpdateQuotePublicationDTO): Promise<QuotePublicationEntity> {
-    const pojoType = (await this.quotePublicationRepository.findById(id)).toPOJO()
-    const titles = dto.tags || pojoType.tags?.map(el => el.title) || []
+  public async update(id: string, { userId, ...dto }: UpdateQuotePublicationDTO): Promise<QuotePublicationEntity> {
+    const pojoType = (await this.quotePublicationRepository.findById(id)).toPOJO();
+
+    if (userId !== pojoType.currentOwnerId) {
+      throw new UnauthorizedException('User is not publication owner');
+    }
+    
+    const titles = dto.tags || pojoType.tags?.map(el => el.title) || [];
     const newTags = await this.publicationTagService.createTags({
       titles
-    })
+    });
     const updatedQuotePublication = new QuotePublicationEntity({
       currentOwnerId: pojoType.currentOwnerId,
       isReposted: pojoType.isReposted,
@@ -59,12 +68,12 @@ export class QuotePublicationService {
       text: pojoType.text,
       author: pojoType.author,
       ...dto,
-      tags: newTags.map(el => el.toPOJO()),
-    })
-    return this.quotePublicationRepository.update(id, updatedQuotePublication)
+      tags: newTags.map(el => el.toPOJO())
+    });
+    return this.quotePublicationRepository.update(id, updatedQuotePublication);
   }
 
   public async delete(id: string) {
-    await this.quotePublicationRepository.deleteById(id)
+    await this.quotePublicationRepository.deleteById(id);
   }
 }

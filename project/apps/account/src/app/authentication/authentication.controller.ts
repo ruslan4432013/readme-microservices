@@ -60,12 +60,7 @@ export class AuthenticationController {
   @Get('users')
   public async getMany(@Query() { ids }: UsersQuery) {
     const users = await this.authService.getUsers(ids);
-    return users.map(el => {
-      if (typeof el === 'string') {
-        return el;
-      }
-      return fillDTO(UserRDO, el);
-    });
+    return users;
 
   }
 
@@ -151,11 +146,7 @@ export class AuthenticationController {
   @UseGuards(JwtAuthGuard)
   @Post('change-password')
   public async changePassword(@Req() { user }: RequestWithUser, @Body() dto: ChangeUserPasswordDTO) {
-    if (!user?.id) {
-      throw new UnauthorizedException('Incorrect user');
-    }
-    await this.authService.changePassword(user.id, dto);
-
+    await this.authService.changePassword(user?.id, dto);
     return fillDTO(SuccessRDO, {
       success: true
     });

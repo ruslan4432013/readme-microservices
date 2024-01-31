@@ -19,7 +19,7 @@ import { RequestWithTokenPayload } from '@project/shared/app/types';
 import { applicationConfig } from '@project/shared/config/bff';
 import { AxiosExceptionFilter } from '@project/shared/core';
 import {
-  PhotoPublicationRDO, UpdatePhotoPublicationDTO
+  PhotoPublicationRDO
 } from '@project/shared/transfer-objects';
 
 import { PhotoFormDataDTO } from './dto/photo-form-data.dto';

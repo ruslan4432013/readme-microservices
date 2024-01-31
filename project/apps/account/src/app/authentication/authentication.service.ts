@@ -9,8 +9,8 @@ import { JwtService } from '@nestjs/jwt';
 
 import { AuthUser, RefreshTokenPayload, Token, TokenPayload, User } from '@project/shared/app/types';
 import { jwtConfig } from '@project/shared/config/account';
-import { createJWTPayload } from '@project/shared/helpers';
-import { ChangeUserPasswordDTO, CreateUserDTO, LoginUserDTO } from '@project/shared/transfer-objects';
+import { createJWTPayload, fillDTO } from '@project/shared/helpers';
+import { ChangeUserPasswordDTO, CreateUserDTO, LoginUserDTO, UserRDO } from '@project/shared/transfer-objects';
 
 import { AUTH_USER_MESSAGES } from './authentication.constant';
 
@@ -105,9 +105,15 @@ export class AuthenticationService {
     return this.jwtService.signAsync(payload);
   }
 
-  public async changePassword(userId: string, payload: ChangeUserPasswordDTO) {
+  public async changePassword(userId = '', payload: ChangeUserPasswordDTO) {
+
+    if (!userId) {
+      throw new UnauthorizedException('Incorrect user');
+    }
+
     const { newPassword, currentPassword } = payload;
     const userEntity = await this.publicationUserRepository.findById(userId);
+
     if (!userEntity) {
       throw new NotFoundException(`Incorrect user id ${userId}`);
     }
@@ -129,6 +135,12 @@ export class AuthenticationService {
   }
 
   public async getUsers(ids: string[]) {
-    return this.publicationUserRepository.findManyByIds(ids);
+    const users = await this.publicationUserRepository.findManyByIds(ids);
+    return users.map(el => {
+      if (typeof el === 'string') {
+        return el;
+      }
+      return fillDTO(UserRDO, el);
+    });
   }
 }
